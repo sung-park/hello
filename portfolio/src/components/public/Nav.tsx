@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Github, Linkedin, Mail, Twitter, ExternalLink } from 'lucide-react'
 import type { SocialLink } from '@/generated/prisma'
 
@@ -26,9 +26,12 @@ interface NavProps {
 
 export function Nav({ name, title, tagline, socialLinks }: NavProps) {
   const [activeSection, setActiveSection] = useState<string>('about')
+  const clickLockRef = useRef(false)
+  const lockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     function onScroll() {
+      if (clickLockRef.current) return
       const threshold = window.innerHeight * 0.25
       let current: string = SECTIONS[0].id
       for (const { id } of SECTIONS) {
@@ -41,6 +44,15 @@ export function Nav({ name, title, tagline, socialLinks }: NavProps) {
     onScroll()
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  function handleNavClick(id: string) {
+    setActiveSection(id)
+    clickLockRef.current = true
+    if (lockTimerRef.current) clearTimeout(lockTimerRef.current)
+    lockTimerRef.current = setTimeout(() => {
+      clickLockRef.current = false
+    }, 1000)
+  }
 
   return (
     <header className="lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-[300px] lg:flex-shrink-0 lg:flex-col lg:justify-between lg:py-24">
@@ -67,7 +79,7 @@ export function Nav({ name, title, tagline, socialLinks }: NavProps) {
               <li key={id}>
                 <a
                   href={`#${id}`}
-                  onClick={() => setActiveSection(id)}
+                  onClick={() => handleNavClick(id)}
                   className={`group flex items-center gap-4 py-2 text-sm font-medium transition-colors ${
                     activeSection === id
                       ? 'text-[#64ffda]'
