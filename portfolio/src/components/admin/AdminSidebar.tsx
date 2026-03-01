@@ -9,6 +9,7 @@ import {
   Briefcase,
   FolderOpen,
   Link2,
+  FlaskConical,
   LogOut,
 } from 'lucide-react'
 
@@ -18,6 +19,7 @@ const NAV_ITEMS = [
   { href: '/admin/experience', label: '경력', icon: Briefcase },
   { href: '/admin/projects', label: '프로젝트', icon: FolderOpen },
   { href: '/admin/social', label: '소셜 링크', icon: Link2 },
+  { href: '/admin/lab', label: '실험실', icon: FlaskConical },
 ]
 
 export function AdminSidebar() {

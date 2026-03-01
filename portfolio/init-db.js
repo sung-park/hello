@@ -59,6 +59,12 @@ async function init() {
       "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
       "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
+
+    CREATE TABLE IF NOT EXISTS "Setting" (
+      "key" TEXT NOT NULL PRIMARY KEY,
+      "value" TEXT NOT NULL,
+      "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
   `)
   console.log('DB 초기화 완료')
   client.close()
