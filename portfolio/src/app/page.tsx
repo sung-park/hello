@@ -6,7 +6,7 @@ import { ProjectsSection } from '@/components/public/ProjectsSection'
 import { SocialFooter } from '@/components/public/SocialFooter'
 import type { Metadata } from 'next'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await db.about.findUnique({ where: { id: 'singleton' } })
