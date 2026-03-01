@@ -28,19 +28,18 @@ export function Nav({ name, title, tagline, socialLinks }: NavProps) {
   const [activeSection, setActiveSection] = useState<string>('about')
 
   useEffect(() => {
-    const observers = SECTIONS.map(({ id }) => {
-      const el = document.getElementById(id)
-      if (!el) return null
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) setActiveSection(id)
-        },
-        { rootMargin: '-40% 0px -40% 0px' },
-      )
-      observer.observe(el)
-      return observer
-    })
-    return () => observers.forEach((o) => o?.disconnect())
+    function onScroll() {
+      const scrollMid = window.scrollY + window.innerHeight * 0.4
+      let current: string = SECTIONS[0].id
+      for (const { id } of SECTIONS) {
+        const el = document.getElementById(id)
+        if (el && el.offsetTop <= scrollMid) current = id
+      }
+      setActiveSection(current)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   return (
