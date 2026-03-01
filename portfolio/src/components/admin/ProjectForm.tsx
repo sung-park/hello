@@ -2,6 +2,7 @@
 
 import { useTransition, useState } from 'react'
 import { MarkdownEditor } from './MarkdownEditor'
+import { ThumbnailUploader } from './ThumbnailUploader'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -15,9 +16,11 @@ interface Props {
 export function ProjectForm({ project, action }: Props) {
   const [isPending, startTransition] = useTransition()
   const [description, setDescription] = useState(project?.description ?? '')
+  const [imageUrl, setImageUrl] = useState(project?.imageUrl ?? '')
 
   function handleSubmit(formData: FormData) {
     formData.set('description', description)
+    formData.set('imageUrl', imageUrl)
     startTransition(() => action(formData))
   }
 
@@ -65,13 +68,8 @@ export function ProjectForm({ project, action }: Props) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="imageUrl">썸네일 이미지 URL</Label>
-        <Input
-          id="imageUrl"
-          name="imageUrl"
-          defaultValue={project?.imageUrl ?? ''}
-          placeholder="https://..."
-        />
+        <Label>썸네일 이미지</Label>
+        <ThumbnailUploader currentUrl={imageUrl || undefined} onUpload={setImageUrl} />
       </div>
 
       <div className="space-y-2">

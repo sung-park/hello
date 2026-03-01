@@ -31,7 +31,7 @@ COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/@libsql ./node_modules/@libsql
 COPY --from=builder /app/src/generated ./src/generated
 COPY init-db.js entrypoint.sh ./
-RUN chmod +x entrypoint.sh && mkdir -p /app/data && chown nextjs:nodejs /app/data
+RUN chmod +x entrypoint.sh && mkdir -p /app/data/uploads && chown -R nextjs:nodejs /app/data
 USER nextjs
 EXPOSE 3000
 ENV PORT=3000
