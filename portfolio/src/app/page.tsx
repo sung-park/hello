@@ -5,15 +5,10 @@ import { ExperienceSection } from '@/components/public/ExperienceSection'
 import { ProjectsSection } from '@/components/public/ProjectsSection'
 import { SocialFooter } from '@/components/public/SocialFooter'
 import { getPigEnabled } from '@/lib/actions/lab'
-import dynamicImport from 'next/dynamic'
+import { PigWrapper } from '@/components/public/PigWrapper'
 import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
-
-const MinecraftPig = dynamicImport(
-  () => import('@/components/public/MinecraftPig').then((m) => m.MinecraftPig),
-  { ssr: false },
-)
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await db.about.findUnique({ where: { id: 'singleton' } })
@@ -54,7 +49,7 @@ export default async function PortfolioPage() {
           <SocialFooter socialLinks={socialLinks} />
         </main>
       </div>
-      {pigEnabled && <MinecraftPig />}
+      {pigEnabled && <PigWrapper />}
     </div>
   )
 }
