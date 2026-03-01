@@ -4,24 +4,49 @@ import { revalidatePath } from 'next/cache'
 import { db } from '@/lib/db'
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
+import { translateToEnglish } from '@/lib/translate'
+
+async function translateAndSave(id: string, company: string, role: string, description: string) {
+  try {
+    const translated = await translateToEnglish({ company, role, description })
+    if (Object.keys(translated).length > 0) {
+      await db.experience.update({
+        where: { id },
+        data: {
+          companyEn: translated.company ?? '',
+          roleEn: translated.role ?? '',
+          descriptionEn: translated.description ?? '',
+        },
+      })
+    }
+  } catch (e) {
+    console.error('번역 실패:', e)
+  }
+}
 
 export async function createExperience(formData: FormData) {
   const session = await auth()
   if (!session) redirect('/admin/login')
 
+  const company = formData.get('company') as string
+  const role = formData.get('role') as string
+  const description = formData.get('description') as string
+
   const count = await db.experience.count()
-  await db.experience.create({
+  const created = await db.experience.create({
     data: {
-      company: formData.get('company') as string,
-      role: formData.get('role') as string,
+      company,
+      role,
       startDate: formData.get('startDate') as string,
       endDate: (formData.get('endDate') as string) || null,
-      description: formData.get('description') as string,
+      description,
       techStack: formData.get('techStack') as string,
       published: formData.get('published') === 'true',
       order: count,
     },
   })
+
+  await translateAndSave(created.id, company, role, description)
 
   revalidatePath('/')
   redirect('/admin/experience')
@@ -31,18 +56,24 @@ export async function updateExperience(id: string, formData: FormData) {
   const session = await auth()
   if (!session) redirect('/admin/login')
 
+  const company = formData.get('company') as string
+  const role = formData.get('role') as string
+  const description = formData.get('description') as string
+
   await db.experience.update({
     where: { id },
     data: {
-      company: formData.get('company') as string,
-      role: formData.get('role') as string,
+      company,
+      role,
       startDate: formData.get('startDate') as string,
       endDate: (formData.get('endDate') as string) || null,
-      description: formData.get('description') as string,
+      description,
       techStack: formData.get('techStack') as string,
       published: formData.get('published') === 'true',
     },
   })
+
+  await translateAndSave(id, company, role, description)
 
   revalidatePath('/')
   redirect('/admin/experience')

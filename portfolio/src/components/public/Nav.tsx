@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Github, Linkedin, Mail, Twitter, ExternalLink } from 'lucide-react'
 import type { SocialLink } from '@/generated/prisma'
 import { MinecraftPig } from './MinecraftPig'
@@ -25,12 +26,14 @@ interface NavProps {
   tagline: string
   socialLinks: SocialLink[]
   pigEnabled?: boolean
+  lang?: string
 }
 
-export function Nav({ name, title, tagline, socialLinks, pigEnabled }: NavProps) {
+export function Nav({ name, title, tagline, socialLinks, pigEnabled, lang = 'ko' }: NavProps) {
   const [activeSection, setActiveSection] = useState<string>('about')
   const clickLockRef = useRef(false)
   const lockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const router = useRouter()
 
   useEffect(() => {
     function onScroll() {
@@ -110,22 +113,40 @@ export function Nav({ name, title, tagline, socialLinks, pigEnabled }: NavProps)
             <MinecraftPig />
           </div>
         )}
-        {socialLinks.length > 0 && (
-          <div className="mt-8 flex items-center gap-4 lg:mt-0">
-            {socialLinks.map((link) => (
-              <a
-                key={link.id}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={link.platform}
-                className="text-slate-400 transition-colors hover:text-[#64ffda]"
-              >
-                {ICON_MAP[link.icon] ?? <ExternalLink size={20} />}
-              </a>
-            ))}
+        <div className="mt-8 flex items-center justify-between lg:mt-0">
+          {socialLinks.length > 0 && (
+            <div className="flex items-center gap-4">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.id}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={link.platform}
+                  className="text-slate-400 transition-colors hover:text-[#64ffda]"
+                >
+                  {ICON_MAP[link.icon] ?? <ExternalLink size={20} />}
+                </a>
+              ))}
+            </div>
+          )}
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => router.push('/?lang=ko')}
+              className={`text-lg transition-opacity ${lang === 'ko' ? 'opacity-100' : 'opacity-35 hover:opacity-70'}`}
+              aria-label="한국어"
+            >
+              🇰🇷
+            </button>
+            <button
+              onClick={() => router.push('/?lang=en')}
+              className={`text-lg transition-opacity ${lang === 'en' ? 'opacity-100' : 'opacity-35 hover:opacity-70'}`}
+              aria-label="English"
+            >
+              🇺🇸
+            </button>
           </div>
-        )}
+        </div>
       </div>
     </header>
   )

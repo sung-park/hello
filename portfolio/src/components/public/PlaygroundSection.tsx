@@ -5,19 +5,22 @@ import type { Playground } from '@/generated/prisma'
 
 interface Props {
   items: Playground[]
+  lang?: string
 }
 
-export function PlaygroundSection({ items }: Props) {
+export function PlaygroundSection({ items, lang }: Props) {
   if (items.length === 0) return null
+
+  const label = lang === 'en' ? 'Playground' : '플레이그라운드'
 
   return (
     <section
       id="playground"
       className="mb-24 scroll-mt-24 lg:scroll-mt-0"
-      aria-label="플레이그라운드"
+      aria-label={label}
     >
       <h2 className="mb-8 text-xs font-semibold uppercase tracking-widest text-slate-200 lg:sr-only">
-        플레이그라운드
+        {label}
       </h2>
       <ol className="space-y-4">
         {items.map((item) => (

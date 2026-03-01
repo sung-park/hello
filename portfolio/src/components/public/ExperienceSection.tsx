@@ -4,19 +4,23 @@ import type { Experience } from '@/generated/prisma'
 
 interface Props {
   experiences: Experience[]
+  lang?: string
 }
 
-export function ExperienceSection({ experiences }: Props) {
+export function ExperienceSection({ experiences, lang }: Props) {
   if (experiences.length === 0) return null
+
+  const label = lang === 'en' ? 'Experience' : '경력'
+  const present = lang === 'en' ? 'Present' : '현재'
 
   return (
     <section
       id="experience"
       className="mb-24 scroll-mt-24 lg:scroll-mt-0"
-      aria-label="경력"
+      aria-label={label}
     >
       <h2 className="mb-8 text-xs font-semibold uppercase tracking-widest text-slate-200 lg:sr-only">
-        경력
+        {label}
       </h2>
       <ol className="group/list space-y-4">
         {experiences.map((exp) => (
@@ -26,7 +30,7 @@ export function ExperienceSection({ experiences }: Props) {
                 <div className="mb-2 mt-0.5 shrink-0 text-xs font-medium uppercase tracking-widest text-slate-500 lg:w-32 lg:text-right">
                   <span>{exp.startDate}</span>
                   <span className="mx-1">—</span>
-                  <span>{exp.endDate ?? '현재'}</span>
+                  <span>{exp.endDate ?? present}</span>
                 </div>
                 <div className="flex-1">
                   <h3 className="font-medium leading-snug text-slate-200">

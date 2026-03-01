@@ -18,6 +18,10 @@ async function init() {
       "bio" TEXT NOT NULL DEFAULT '',
       "avatarUrl" TEXT,
       "resumeUrl" TEXT,
+      "nameEn" TEXT NOT NULL DEFAULT '',
+      "titleEn" TEXT NOT NULL DEFAULT '',
+      "taglineEn" TEXT NOT NULL DEFAULT '',
+      "bioEn" TEXT NOT NULL DEFAULT '',
       "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
 
@@ -31,6 +35,9 @@ async function init() {
       "techStack" TEXT NOT NULL,
       "order" INTEGER NOT NULL DEFAULT 0,
       "published" BOOLEAN NOT NULL DEFAULT true,
+      "roleEn" TEXT NOT NULL DEFAULT '',
+      "companyEn" TEXT NOT NULL DEFAULT '',
+      "descriptionEn" TEXT NOT NULL DEFAULT '',
       "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
       "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
@@ -46,6 +53,8 @@ async function init() {
       "featured" BOOLEAN NOT NULL DEFAULT false,
       "order" INTEGER NOT NULL DEFAULT 0,
       "published" BOOLEAN NOT NULL DEFAULT true,
+      "titleEn" TEXT NOT NULL DEFAULT '',
+      "descriptionEn" TEXT NOT NULL DEFAULT '',
       "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
       "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
@@ -71,6 +80,8 @@ async function init() {
       "featured" BOOLEAN NOT NULL DEFAULT false,
       "order" INTEGER NOT NULL DEFAULT 0,
       "published" BOOLEAN NOT NULL DEFAULT true,
+      "titleEn" TEXT NOT NULL DEFAULT '',
+      "descriptionEn" TEXT NOT NULL DEFAULT '',
       "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
       "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
@@ -85,7 +96,28 @@ async function init() {
   client.close()
 }
 
-init().catch(err => {
-  console.error('DB 초기화 실패:', err)
-  process.exit(1)
-})
+async function migrate() {
+  const alters = [
+    `ALTER TABLE "About" ADD COLUMN "nameEn" TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE "About" ADD COLUMN "titleEn" TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE "About" ADD COLUMN "taglineEn" TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE "About" ADD COLUMN "bioEn" TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE "Experience" ADD COLUMN "roleEn" TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE "Experience" ADD COLUMN "companyEn" TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE "Experience" ADD COLUMN "descriptionEn" TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE "Project" ADD COLUMN "titleEn" TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE "Project" ADD COLUMN "descriptionEn" TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE "Playground" ADD COLUMN "titleEn" TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE "Playground" ADD COLUMN "descriptionEn" TEXT NOT NULL DEFAULT ''`,
+  ]
+  for (const sql of alters) {
+    try { await client.execute(sql) } catch (_) { /* 컬럼 이미 존재 시 skip */ }
+  }
+}
+
+init()
+  .then(migrate)
+  .catch(err => {
+    console.error('DB 초기화 실패:', err)
+    process.exit(1)
+  })

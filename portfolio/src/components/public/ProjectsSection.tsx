@@ -5,19 +5,22 @@ import type { Project } from '@/generated/prisma'
 
 interface Props {
   projects: Project[]
+  lang?: string
 }
 
-export function ProjectsSection({ projects }: Props) {
+export function ProjectsSection({ projects, lang }: Props) {
   if (projects.length === 0) return null
+
+  const label = lang === 'en' ? 'Projects' : '프로젝트'
 
   return (
     <section
       id="projects"
       className="mb-24 scroll-mt-24 lg:scroll-mt-0"
-      aria-label="프로젝트"
+      aria-label={label}
     >
       <h2 className="mb-8 text-xs font-semibold uppercase tracking-widest text-slate-200 lg:sr-only">
-        프로젝트
+        {label}
       </h2>
       <ol className="space-y-4">
         {projects.map((project) => (
