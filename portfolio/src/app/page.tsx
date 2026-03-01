@@ -33,6 +33,7 @@ export default async function PortfolioPage() {
     getPigEnabled(),
   ])
 
+
   return (
     <div className="mx-auto min-h-screen max-w-screen-xl px-6 lg:px-12">
       <div className="lg:flex lg:gap-16">
@@ -46,7 +47,7 @@ export default async function PortfolioPage() {
           <AboutSection about={about} />
           <ExperienceSection experiences={experiences} />
           <ProjectsSection projects={projects} />
-          <SocialFooter socialLinks={socialLinks} />
+          <SocialFooter />
         </main>
       </div>
       {pigEnabled && <PigWrapper />}
