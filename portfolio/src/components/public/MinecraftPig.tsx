@@ -97,6 +97,7 @@ export function MinecraftPig() {
     const headWorldPos = new THREE.Vector3()
 
     function animate() {
+      if (!canvas) return
       animId = requestAnimationFrame(animate)
       const now = performance.now()
       const delta = Math.min((now - prevTime) / 1000, 0.1)
