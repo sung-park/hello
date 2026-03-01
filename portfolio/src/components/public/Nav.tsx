@@ -106,7 +106,7 @@ export function Nav({ name, title, tagline, socialLinks, pigEnabled }: NavProps)
 
       <div>
         {pigEnabled && (
-          <div className="hidden lg:block">
+          <div className="hidden lg:block mb-4">
             <MinecraftPig />
           </div>
         )}

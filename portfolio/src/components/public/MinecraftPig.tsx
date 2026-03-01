@@ -44,7 +44,7 @@ export function MinecraftPig() {
 
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 100)
-    camera.position.set(0, 0.4, 3.6)
+    camera.position.set(0.6, 0.4, 3.6)
 
     scene.add(new THREE.AmbientLight(0xffffff, 1.4))
     const dirLight = new THREE.DirectionalLight(0xffffff, 0.5)
@@ -112,8 +112,8 @@ export function MinecraftPig() {
       const dx = mouse.x - headScreenX
       const dy = mouse.y - headScreenY
 
-      const tY = Math.max(-0.7, Math.min(0.7, (dx / window.innerWidth) * 2.2))
-      const tX = Math.max(-0.45, Math.min(0.5, (dy / window.innerHeight) * 1.6))
+      const tY = Math.max(-0.7, Math.min(0.7, dx / 400))
+      const tX = Math.max(-0.45, Math.min(0.5, dy / 300))
 
       const s = delta * 4
       headGroup.rotation.y = lerp(headGroup.rotation.y, tY, s)
