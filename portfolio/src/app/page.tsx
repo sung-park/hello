@@ -39,7 +39,7 @@ export default async function PortfolioPage() {
           tagline={about?.tagline ?? ''}
           socialLinks={socialLinks}
         />
-        <main className="flex-1 pt-24 pb-24 lg:pt-0">
+        <main className="flex-1 pt-24 pb-24 lg:pt-24">
           <AboutSection about={about} />
           <ExperienceSection experiences={experiences} />
           <ProjectsSection projects={projects} />
