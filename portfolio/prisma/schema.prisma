@@ -57,6 +57,21 @@ model SocialLink {
   updatedAt DateTime @updatedAt
 }
 
+model Playground {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  techStack   String
+  repoUrl     String?
+  liveUrl     String?
+  imageUrl    String?
+  featured    Boolean  @default(false)
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Setting {
   key       String   @id
   value     String

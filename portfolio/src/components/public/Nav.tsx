@@ -8,6 +8,7 @@ const SECTIONS = [
   { id: 'about', label: '소개' },
   { id: 'experience', label: '경력' },
   { id: 'projects', label: '프로젝트' },
+  { id: 'playground', label: '플레이그라운드' },
 ] as const
 
 const ICON_MAP: Record<string, React.ReactNode> = {

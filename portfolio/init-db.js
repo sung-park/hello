@@ -60,6 +60,21 @@ async function init() {
       "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
 
+    CREATE TABLE IF NOT EXISTS "Playground" (
+      "id" TEXT NOT NULL PRIMARY KEY,
+      "title" TEXT NOT NULL,
+      "description" TEXT NOT NULL,
+      "techStack" TEXT NOT NULL,
+      "repoUrl" TEXT,
+      "liveUrl" TEXT,
+      "imageUrl" TEXT,
+      "featured" BOOLEAN NOT NULL DEFAULT false,
+      "order" INTEGER NOT NULL DEFAULT 0,
+      "published" BOOLEAN NOT NULL DEFAULT true,
+      "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+
     CREATE TABLE IF NOT EXISTS "Setting" (
       "key" TEXT NOT NULL PRIMARY KEY,
       "value" TEXT NOT NULL,

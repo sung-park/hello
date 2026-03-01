@@ -8,6 +8,7 @@ import {
   User,
   Briefcase,
   FolderOpen,
+  Beaker,
   Link2,
   FlaskConical,
   LogOut,
@@ -18,6 +19,7 @@ const NAV_ITEMS = [
   { href: '/admin/about', label: '자기소개', icon: User },
   { href: '/admin/experience', label: '경력', icon: Briefcase },
   { href: '/admin/projects', label: '프로젝트', icon: FolderOpen },
+  { href: '/admin/playground', label: '플레이그라운드', icon: Beaker },
   { href: '/admin/social', label: '소셜 링크', icon: Link2 },
   { href: '/admin/lab', label: '실험실', icon: FlaskConical },
 ]

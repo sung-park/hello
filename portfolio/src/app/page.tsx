@@ -3,6 +3,7 @@ import { Nav } from '@/components/public/Nav'
 import { AboutSection } from '@/components/public/AboutSection'
 import { ExperienceSection } from '@/components/public/ExperienceSection'
 import { ProjectsSection } from '@/components/public/ProjectsSection'
+import { PlaygroundSection } from '@/components/public/PlaygroundSection'
 import { SocialFooter } from '@/components/public/SocialFooter'
 import { getPigEnabled } from '@/lib/actions/lab'
 import { PigWrapper } from '@/components/public/PigWrapper'
@@ -19,13 +20,17 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PortfolioPage() {
-  const [about, experiences, projects, socialLinks, pigEnabled] = await Promise.all([
+  const [about, experiences, projects, playgrounds, socialLinks, pigEnabled] = await Promise.all([
     db.about.findUnique({ where: { id: 'singleton' } }),
     db.experience.findMany({
       where: { published: true },
       orderBy: { order: 'asc' },
     }),
     db.project.findMany({
+      where: { published: true },
+      orderBy: [{ featured: 'desc' }, { order: 'asc' }],
+    }),
+    db.playground.findMany({
       where: { published: true },
       orderBy: [{ featured: 'desc' }, { order: 'asc' }],
     }),
@@ -47,6 +52,7 @@ export default async function PortfolioPage() {
           <AboutSection about={about} />
           <ExperienceSection experiences={experiences} />
           <ProjectsSection projects={projects} />
+          <PlaygroundSection items={playgrounds} />
           <SocialFooter />
         </main>
       </div>
