@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model About {
+  id        String   @id @default("singleton")
+  name      String   @default("")
+  title     String   @default("")
+  tagline   String   @default("")
+  bio       String   @default("")
+  avatarUrl String?
+  resumeUrl String?
+  updatedAt DateTime @updatedAt
+}
+
+model Experience {
+  id          String   @id @default(cuid())
+  company     String
+  role        String
+  startDate   String
+  endDate     String?
+  description String
+  techStack   String
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  techStack   String
+  repoUrl     String?
+  liveUrl     String?
+  imageUrl    String?
+  featured    Boolean  @default(false)
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SocialLink {
+  id        String   @id @default(cuid())
+  platform  String
+  url       String
+  icon      String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
