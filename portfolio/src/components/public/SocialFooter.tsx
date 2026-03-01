@@ -32,7 +32,10 @@ export function SocialFooter({ socialLinks }: Props) {
         </div>
       )}
       <p className="text-xs text-slate-600">
-        Built with Next.js &amp; Tailwind CSS
+        Built with Next.js &amp; Tailwind CSS &middot;{' '}
+        <a href="/admin/login" className="hover:text-slate-400 transition-colors">
+          admin
+        </a>
       </p>
     </footer>
   )
