@@ -94,23 +94,24 @@ export function MinecraftPig() {
       return a + (b - a) * t
     }
 
+    const headWorldPos = new THREE.Vector3()
+
     function animate() {
       animId = requestAnimationFrame(animate)
       const now = performance.now()
       const delta = Math.min((now - prevTime) / 1000, 0.1)
       prevTime = now
 
-      // Canvas is fixed 208×192 at bottom-left.
-      // Pig head center projected to screen ≈ (77, innerHeight - 109).
-      const headX = 77
-      const headY = window.innerHeight - 109
+      headGroup.getWorldPosition(headWorldPos)
+      headWorldPos.project(camera)
+      const rect = canvas.getBoundingClientRect()
+      const headScreenX = rect.left + ((headWorldPos.x + 1) / 2) * rect.width
+      const headScreenY = rect.top + ((1 - headWorldPos.y) / 2) * rect.height
 
-      const dx = mouse.x - headX  // positive = cursor is to the right
-      const dy = mouse.y - headY  // positive = cursor is below
+      const dx = mouse.x - headScreenX
+      const dy = mouse.y - headScreenY
 
-      // rotation.y: negative = head turns right, positive = turns left
-      // rotation.x: positive = head looks down, negative = looks up
-      const tY = Math.max(-0.7, Math.min(0.7, -(dx / window.innerWidth) * 2.2))
+      const tY = Math.max(-0.7, Math.min(0.7, (dx / window.innerWidth) * 2.2))
       const tX = Math.max(-0.45, Math.min(0.5, (dy / window.innerHeight) * 1.6))
 
       const s = delta * 4
@@ -131,7 +132,7 @@ export function MinecraftPig() {
   }, [])
 
   return (
-    <div className="pointer-events-none fixed bottom-0 left-0 z-40">
+    <div className="pointer-events-none">
       <canvas ref={canvasRef} width={208} height={192} />
     </div>
   )

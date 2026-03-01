@@ -6,7 +6,6 @@ import { ProjectsSection } from '@/components/public/ProjectsSection'
 import { PlaygroundSection } from '@/components/public/PlaygroundSection'
 import { SocialFooter } from '@/components/public/SocialFooter'
 import { getPigEnabled } from '@/lib/actions/lab'
-import { PigWrapper } from '@/components/public/PigWrapper'
 import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
@@ -47,6 +46,7 @@ export default async function PortfolioPage() {
           title={about?.title ?? ''}
           tagline={about?.tagline ?? ''}
           socialLinks={socialLinks}
+          pigEnabled={pigEnabled}
         />
         <main className="flex-1 pt-24 pb-24 lg:pt-24">
           <AboutSection about={about} />
@@ -56,7 +56,6 @@ export default async function PortfolioPage() {
           <SocialFooter />
         </main>
       </div>
-      {pigEnabled && <PigWrapper />}
     </div>
   )
 }

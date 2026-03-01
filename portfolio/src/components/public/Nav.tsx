@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Github, Linkedin, Mail, Twitter, ExternalLink } from 'lucide-react'
 import type { SocialLink } from '@/generated/prisma'
+import { MinecraftPig } from './MinecraftPig'
 
 const SECTIONS = [
   { id: 'about', label: '소개' },
@@ -23,9 +24,10 @@ interface NavProps {
   title: string
   tagline: string
   socialLinks: SocialLink[]
+  pigEnabled?: boolean
 }
 
-export function Nav({ name, title, tagline, socialLinks }: NavProps) {
+export function Nav({ name, title, tagline, socialLinks, pigEnabled }: NavProps) {
   const [activeSection, setActiveSection] = useState<string>('about')
   const clickLockRef = useRef(false)
   const lockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -102,22 +104,29 @@ export function Nav({ name, title, tagline, socialLinks }: NavProps) {
         </nav>
       </div>
 
-      {socialLinks.length > 0 && (
-        <div className="mt-8 flex items-center gap-4 lg:mt-0">
-          {socialLinks.map((link) => (
-            <a
-              key={link.id}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={link.platform}
-              className="text-slate-400 transition-colors hover:text-[#64ffda]"
-            >
-              {ICON_MAP[link.icon] ?? <ExternalLink size={20} />}
-            </a>
-          ))}
-        </div>
-      )}
+      <div>
+        {pigEnabled && (
+          <div className="hidden lg:block">
+            <MinecraftPig />
+          </div>
+        )}
+        {socialLinks.length > 0 && (
+          <div className="mt-8 flex items-center gap-4 lg:mt-0">
+            {socialLinks.map((link) => (
+              <a
+                key={link.id}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={link.platform}
+                className="text-slate-400 transition-colors hover:text-[#64ffda]"
+              >
+                {ICON_MAP[link.icon] ?? <ExternalLink size={20} />}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
     </header>
   )
 }
