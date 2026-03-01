@@ -29,11 +29,11 @@ export function Nav({ name, title, tagline, socialLinks }: NavProps) {
 
   useEffect(() => {
     function onScroll() {
-      const scrollMid = window.scrollY + window.innerHeight * 0.4
+      const threshold = window.innerHeight * 0.25
       let current: string = SECTIONS[0].id
       for (const { id } of SECTIONS) {
         const el = document.getElementById(id)
-        if (el && el.offsetTop <= scrollMid) current = id
+        if (el && el.getBoundingClientRect().top <= threshold) current = id
       }
       setActiveSection(current)
     }
@@ -67,6 +67,7 @@ export function Nav({ name, title, tagline, socialLinks }: NavProps) {
               <li key={id}>
                 <a
                   href={`#${id}`}
+                  onClick={() => setActiveSection(id)}
                   className={`group flex items-center gap-4 py-2 text-sm font-medium transition-colors ${
                     activeSection === id
                       ? 'text-[#64ffda]'
