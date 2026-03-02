@@ -93,7 +93,6 @@ async function init() {
     );
   `)
   console.log('DB 초기화 완료')
-  client.close()
 }
 
 async function migrate() {
@@ -113,6 +112,8 @@ async function migrate() {
   for (const sql of alters) {
     try { await client.execute(sql) } catch (_) { /* 컬럼 이미 존재 시 skip */ }
   }
+  console.log('DB 마이그레이션 완료')
+  client.close()
 }
 
 init()
