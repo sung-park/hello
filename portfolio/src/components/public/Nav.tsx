@@ -61,7 +61,7 @@ export function Nav({ name, title, tagline, socialLinks, pigEnabled, lang = 'ko'
   }
 
   return (
-    <header className="lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-[300px] lg:flex-shrink-0 lg:flex-col lg:justify-between lg:py-24">
+    <header className="pt-16 lg:pt-0 lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-[300px] lg:flex-shrink-0 lg:flex-col lg:justify-between lg:py-24">
       <div>
         <div className="mb-8">
           {name && (

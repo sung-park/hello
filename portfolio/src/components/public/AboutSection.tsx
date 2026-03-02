@@ -18,7 +18,7 @@ export function AboutSection({ about, lang }: Props) {
       className="mb-24 scroll-mt-24 lg:scroll-mt-0"
       aria-label={label}
     >
-      <h2 className="mb-8 text-xs font-semibold uppercase tracking-widest text-slate-200 lg:sr-only">
+      <h2 className="mb-8 text-sm font-semibold uppercase tracking-widest text-slate-200 lg:sr-only">
         {label}
       </h2>
       <div className="prose prose-slate prose-invert max-w-none text-slate-400 [&_a]:text-[#64ffda] [&_a]:no-underline [&_a:hover]:underline [&_strong]:text-slate-200">

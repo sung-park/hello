@@ -19,7 +19,7 @@ export function ExperienceSection({ experiences, lang }: Props) {
       className="mb-24 scroll-mt-24 lg:scroll-mt-0"
       aria-label={label}
     >
-      <h2 className="mb-8 text-xs font-semibold uppercase tracking-widest text-slate-200 lg:sr-only">
+      <h2 className="mb-8 text-sm font-semibold uppercase tracking-widest text-slate-200 lg:sr-only">
         {label}
       </h2>
       <ol className="group/list space-y-4">
