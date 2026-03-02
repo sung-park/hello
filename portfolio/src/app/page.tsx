@@ -5,6 +5,7 @@ import { ExperienceSection } from '@/components/public/ExperienceSection'
 import { ProjectsSection } from '@/components/public/ProjectsSection'
 import { PlaygroundSection } from '@/components/public/PlaygroundSection'
 import { SocialFooter } from '@/components/public/SocialFooter'
+import { LanguageToggle } from '@/components/public/LanguageToggle'
 import { getPigEnabled } from '@/lib/actions/lab'
 import type { Metadata } from 'next'
 
@@ -79,6 +80,7 @@ export default async function PortfolioPage({
 
   return (
     <div className="mx-auto min-h-screen max-w-screen-xl px-6 lg:px-12">
+      <LanguageToggle lang={lang} />
       <div className="lg:flex lg:gap-16">
         <Nav
           name={aboutDisplay?.name ?? ''}
