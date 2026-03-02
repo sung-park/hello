@@ -30,7 +30,7 @@ export function AboutForm({ about }: Props) {
     <form action={handleSubmit} className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="name">이름</Label>
+          <Label htmlFor="name">이름 (KO)</Label>
           <Input
             id="name"
             name="name"
@@ -38,6 +38,18 @@ export function AboutForm({ about }: Props) {
             placeholder="홍길동"
           />
         </div>
+        <div className="space-y-2">
+          <Label htmlFor="nameEn">이름 (EN)</Label>
+          <Input
+            id="nameEn"
+            name="nameEn"
+            defaultValue={about?.nameEn ?? ''}
+            placeholder="Gildong Hong"
+          />
+        </div>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="title">직책/직업</Label>
           <Input

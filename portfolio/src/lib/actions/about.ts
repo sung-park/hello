@@ -10,6 +10,7 @@ export async function updateAbout(formData: FormData) {
   const session = await auth()
   if (!session) redirect('/admin/login')
 
+  const nameEn = (formData.get('nameEn') as string) || ''
   const data = {
     name: formData.get('name') as string,
     title: formData.get('title') as string,
@@ -27,22 +28,19 @@ export async function updateAbout(formData: FormData) {
 
   try {
     const translated = await translateToEnglish({
-      name: data.name,
       title: data.title,
       tagline: data.tagline,
       bio: data.bio,
     })
-    if (Object.keys(translated).length > 0) {
-      await db.about.update({
-        where: { id: 'singleton' },
-        data: {
-          nameEn: translated.name ?? '',
-          titleEn: translated.title ?? '',
-          taglineEn: translated.tagline ?? '',
-          bioEn: translated.bio ?? '',
-        },
-      })
-    }
+    await db.about.update({
+      where: { id: 'singleton' },
+      data: {
+        nameEn,
+        titleEn: translated.title ?? '',
+        taglineEn: translated.tagline ?? '',
+        bioEn: translated.bio ?? '',
+      },
+    })
   } catch (e) {
     console.error('번역 실패:', e)
   }
