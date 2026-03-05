@@ -1,11 +1,18 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 const PINK = 0xf0a0b0
 const PINK_DARK = 0xd07888
 const DARK = 0x2a2a2a
+
+const LINKS = [
+  { label: '🐾 PAW LBM', url: 'https://paw-lbm.sunggeun.com' },
+  { label: '🖼️ Mosaic', url: 'https://mosaic.sunggeun.com' },
+]
+
+const CLICKS_REQUIRED = 10
 
 function addBox(
   parent: THREE.Group,
@@ -31,6 +38,26 @@ function addBox(
 
 export function MinecraftPig() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [showBubble, setShowBubble] = useState(false)
+  const clickCountRef = useRef(0)
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  function handleClick() {
+    clickCountRef.current += 1
+
+    if (resetTimerRef.current) clearTimeout(resetTimerRef.current)
+    resetTimerRef.current = setTimeout(() => {
+      clickCountRef.current = 0
+    }, 2000)
+
+    if (clickCountRef.current >= CLICKS_REQUIRED) {
+      clickCountRef.current = 0
+      setShowBubble(true)
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current)
+      hideTimerRef.current = setTimeout(() => setShowBubble(false), 5000)
+    }
+  }
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -51,12 +78,10 @@ export function MinecraftPig() {
     dirLight.position.set(3, 5, 3)
     scene.add(dirLight)
 
-    // Pig root group — bobs up and down
     const pigGroup = new THREE.Group()
     pigGroup.rotation.set(0.08, 0.5, 0)
     scene.add(pigGroup)
 
-    // Body group
     const bodyGroup = new THREE.Group()
     pigGroup.add(bodyGroup)
 
@@ -66,7 +91,6 @@ export function MinecraftPig() {
     }
     addBox(bodyGroup, 0.08, 0.24, 0.08, PINK_DARK, 0, 0.1, -0.74, 0.4, 0, 0.3)
 
-    // Head group — rotates to follow cursor
     const headGroup = new THREE.Group()
     headGroup.position.set(0, 0.56, 0.73)
     pigGroup.add(headGroup)
@@ -133,8 +157,30 @@ export function MinecraftPig() {
   }, [])
 
   return (
-    <div className="pointer-events-none">
-      <canvas ref={canvasRef} width={208} height={192} />
+    <div className="relative">
+      {showBubble && (
+        <div className="absolute bottom-full left-4 mb-2 flex flex-col gap-2 pointer-events-auto">
+          {LINKS.map((link) => (
+            <a
+              key={link.url}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative bg-white text-slate-800 text-sm font-medium px-3 py-2 rounded-2xl shadow-lg hover:bg-slate-100 transition-colors whitespace-nowrap"
+            >
+              {link.label}
+              <span className="absolute -bottom-2 left-5 w-0 h-0 border-x-[6px] border-x-transparent border-t-[8px] border-t-white" />
+            </a>
+          ))}
+        </div>
+      )}
+      <canvas
+        ref={canvasRef}
+        width={208}
+        height={192}
+        onClick={handleClick}
+        className="cursor-pointer"
+      />
     </div>
   )
 }
