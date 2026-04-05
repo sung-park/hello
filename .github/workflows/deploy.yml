@@ -8,6 +8,10 @@ on:
       - 'portfolio/**'
       - '.github/workflows/deploy.yml'
 
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
 env:
   IMAGE: ghcr.io/${{ github.repository_owner }}/hello-portfolio
 
@@ -51,5 +55,5 @@ jobs:
             cd ~/portfolio
             docker-compose -f docker-compose.prod.yml pull
             docker-compose -f docker-compose.prod.yml up -d
-            docker image prune -f
+            docker image prune -f || true
 # trigger 2
