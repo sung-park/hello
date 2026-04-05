@@ -447,3 +447,219 @@ ALLOWED_EMAIL="your@gmail.com"
 ---
 
 **⏸️ 사용자 승인 대기 중 — 명시적으로 구현 요청이 있을 때까지 코드를 작성하지 않습니다.**
+
+---
+
+## 11. 벚꽃 애니메이션 기능 계획 (2026-04-06)
+
+**참고:** research.md 섹션 7
+
+### 11.1 접근 방식
+
+Canvas 2D API 기반 `'use client'` 컴포넌트. 추가 패키지 없음.
+
+- 꽃잎이 화면 상단에서 생성되어 중력+바람으로 낙하
+- 화면 하단에 정착하면서 쌓임 (pile 높이가 동적으로 증가)
+- 8초 후 서서히 페이드아웃 → 텍스트 가림 방지
+- `z-index: 10` — SpotlightEffect(z-30), 콘텐츠보다 아래
+
+### 11.2 대상 파일
+
+| 작업 | 경로 |
+|---|---|
+| 신규 생성 | `portfolio/src/components/public/CherryBlossom.tsx` |
+| 수정 | `portfolio/src/app/layout.tsx` |
+
+### 11.3 핵심 코드 스니펫
+
+**`CherryBlossom.tsx` 전체 구조:**
+
+```typescript
+'use client'
+
+import { useEffect, useRef } from 'react'
+
+interface FallingPetal {
+  x: number
+  y: number
+  vy: number
+  rotation: number
+  rotationSpeed: number
+  size: number
+  opacity: number
+  swayOffset: number
+  swaySpeed: number
+  swayAmplitude: number
+  timeAlive: number
+}
+
+interface SettledPetal {
+  x: number
+  y: number
+  rotation: number
+  size: number
+  opacity: number
+  settledAt: number
+}
+
+const SPAWN_INTERVAL = 35   // 35프레임마다 꽃잎 1개 생성
+const MAX_FALLING = 60      // 동시 낙하 최대 개수
+const MAX_SETTLED = 250     // 정착 최대 개수
+const FADE_DELAY = 8000     // 정착 후 페이드 시작 지연 (ms)
+const FADE_SPEED = 0.004    // 프레임당 opacity 감소량 (≈4초에 소멸)
+
+function drawPetal(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  size: number,
+  rotation: number,
+  opacity: number,
+) {
+  ctx.save()
+  ctx.translate(x, y)
+  ctx.rotate(rotation)
+  ctx.globalAlpha = opacity
+
+  // 두 타원이 겹쳐 벚꽃 꽃잎 형태
+  ctx.fillStyle = '#ffb7c5'
+  ctx.beginPath()
+  ctx.ellipse(-size * 0.15, 0, size * 0.4, size, 0.15, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.beginPath()
+  ctx.ellipse(size * 0.15, 0, size * 0.4, size, -0.15, 0, Math.PI * 2)
+  ctx.fill()
+
+  // 하이라이트 레이어 (깊이감)
+  ctx.fillStyle = 'rgba(255, 235, 242, 0.45)'
+  ctx.beginPath()
+  ctx.ellipse(0, -size * 0.2, size * 0.22, size * 0.5, 0, 0, Math.PI * 2)
+  ctx.fill()
+
+  ctx.restore()
+}
+
+export function CherryBlossom() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const resize = () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    const falling: FallingPetal[] = []
+    const settled: SettledPetal[] = []
+    let frame = 0
+    let animId: number
+
+    function spawnPetal() {
+      falling.push({
+        x: Math.random() * canvas.width,
+        y: -20,
+        vy: 0.8 + Math.random() * 1.2,
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.05,
+        size: 4 + Math.random() * 4,
+        opacity: 0.7 + Math.random() * 0.3,
+        swayOffset: Math.random() * Math.PI * 2,
+        swaySpeed: 0.01 + Math.random() * 0.01,
+        swayAmplitude: 0.5 + Math.random() * 1.0,
+        timeAlive: 0,
+      })
+    }
+
+    function tick() {
+      frame++
+      const now = performance.now()
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      // 새 꽃잎 생성
+      if (frame % SPAWN_INTERVAL === 0 && falling.length < MAX_FALLING) {
+        spawnPetal()
+      }
+
+      // 낙하 꽃잎 업데이트 & 렌더링
+      for (let i = falling.length - 1; i >= 0; i--) {
+        const p = falling[i]
+        p.timeAlive++
+        p.vy = Math.min(p.vy + 0.02, 2.5)
+        p.x += p.swayAmplitude * Math.sin(p.timeAlive * p.swaySpeed + p.swayOffset)
+        p.y += p.vy
+        p.rotation += p.rotationSpeed
+
+        if (p.y > canvas.height - 15) {
+          // 쌓임 높이: settled 개수에 비례해 점점 높아짐 (max 60px)
+          const pileHeight = Math.min(settled.length * 0.3, 60)
+          settled.push({
+            x: p.x,
+            y: canvas.height - 5 - Math.random() * pileHeight,
+            rotation: p.rotation,
+            size: p.size,
+            opacity: p.opacity,
+            settledAt: now,
+          })
+          falling.splice(i, 1)
+        } else {
+          drawPetal(ctx, p.x, p.y, p.size, p.rotation, p.opacity)
+        }
+      }
+
+      // 정착 꽃잎 업데이트 & 렌더링
+      for (let i = settled.length - 1; i >= 0; i--) {
+        const p = settled[i]
+        const age = now - p.settledAt
+
+        if (age > FADE_DELAY || settled.length > MAX_SETTLED) {
+          p.opacity -= FADE_SPEED
+          if (settled.length > MAX_SETTLED) p.opacity -= FADE_SPEED  // 초과 시 2배 속도
+        }
+
+        if (p.opacity <= 0) {
+          settled.splice(i, 1)
+          continue
+        }
+
+        drawPetal(ctx, p.x, p.y, p.size, p.rotation, p.opacity)
+      }
+
+      animId = requestAnimationFrame(tick)
+    }
+
+    animId = requestAnimationFrame(tick)
+
+    return () => {
+      cancelAnimationFrame(animId)
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+
+  return <canvas ref={canvasRef} className="pointer-events-none fixed inset-0 z-10" />
+}
+```
+
+**`layout.tsx` 수정 사항:**
+
+```typescript
+import { CherryBlossom } from '@/components/public/CherryBlossom'
+
+// ThemeProvider 내부에 추가:
+<CherryBlossom />
+<SpotlightEffect />
+{children}
+```
+
+### 11.4 세부 할일 목록
+
+- [ ] `portfolio/src/components/public/CherryBlossom.tsx` 생성 (위 코드 스니펫 기반)
+- [ ] `portfolio/src/app/layout.tsx` 수정 — `CherryBlossom` import 및 `<CherryBlossom />` 추가
+- [ ] `npx tsc --noEmit` 실행 — 타입 오류 없음 확인
+
+**⏸️ 사용자 승인 대기 중 — 명시적으로 구현 요청이 있을 때까지 코드를 작성하지 않습니다.**

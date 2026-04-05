@@ -498,6 +498,79 @@ export default async function PortfolioPage() {
 
 ---
 
+## 7. 벚꽃 애니메이션 기능 분석 (2026-04-06)
+
+### 7.1 통합 위치
+
+- **파일:** `portfolio/src/app/layout.tsx` (루트 레이아웃)
+- **참조 패턴:** `SpotlightEffect` — `fixed inset-0 z-30 pointer-events-none`와 동일한 오버레이 방식
+- **새 컴포넌트 z-index:** `z-10` (SpotlightEffect의 z-30보다 아래, 콘텐츠보다 아래)
+
+### 7.2 구현 방식 결정
+
+**Canvas 2D API 채택 이유:**
+- 추가 라이브러리 불필요 (Three.js는 3D 용도, 2D 파티클 시스템에는 과함)
+- 수백 개의 파티클을 `requestAnimationFrame` 루프로 효율적으로 렌더링
+- 적분/낙하 물리 로직을 직접 제어 가능
+- DOM에 엘리먼트를 추가하는 CSS 방식보다 성능 우수
+
+**Canvas 설정:**
+- `fixed inset-0 z-10 pointer-events-none`
+- `useEffect`에서 `canvas.width = window.innerWidth`, `canvas.height = window.innerHeight`
+- `resize` 이벤트로 동적 크기 업데이트
+
+### 7.3 꽃잎 물리 모델
+
+**상태 머신:** `falling → settled → fading → (제거)`
+
+**낙하 물리:**
+- 중력: `vy += 0.02` (초당 가속)
+- 최대 낙하 속도: `vy = min(vy, 2.5)`
+- 좌우 흔들림: `x += amplitude * sin(timeAlive * swaySpeed + swayOffset)` (사인파 바람 효과)
+- 회전: `rotation += rotationSpeed`
+
+**정착 판정:** `petal.y > canvas.height - 15`
+
+**쌓임 효과:**
+- `settled` 배열 길이에 비례해 정착 y 범위 확대: `pileHeight = min(settled.length * 0.3, 60)`
+- 새 꽃잎의 정착 y = `canvas.height - 5 - random(0, pileHeight)`
+- 쌓일수록 꽃잎이 점점 위로 올라가는 시각 효과
+
+**녹아없어지기:**
+- 정착 후 `FADE_DELAY` (8000ms) 경과 → `opacity -= 0.004` per frame (약 4초에 걸쳐 소멸)
+- `settled.length > MAX_SETTLED (250)` 초과 시 오래된 꽃잎 2배 빠르게 페이드
+- `opacity <= 0` → 배열에서 제거
+
+### 7.4 렌더링 — 꽃잎 모양
+
+두 개의 겹친 타원으로 벚꽃 꽃잎 형태:
+```
+ctx.ellipse(-size * 0.15, 0, size * 0.4, size, +0.15, 0, 2π)  // 왼쪽 반잎
+ctx.ellipse(+size * 0.15, 0, size * 0.4, size, -0.15, 0, 2π)  // 오른쪽 반잎
+```
+- 색상: `#ffb7c5` (사쿠라 핑크) — 다크 배경 `#0f172a`에서 선명히 보임
+- 하이라이트 레이어: `rgba(255, 235, 242, 0.5)` 소형 타원으로 깊이감 표현
+- `ctx.globalAlpha = opacity` — 전체 꽃잎 투명도 일괄 제어
+
+### 7.5 성능 파라미터
+
+| 파라미터 | 값 | 이유 |
+|---|---|---|
+| 생성 주기 | 35 프레임마다 1개 | 60fps 기준 약 1.7개/초, 자연스러운 밀도 |
+| 최대 낙하 중 | 60개 | 메모리/연산량 제한 |
+| 최대 정착 | 250개 | 화면 하단 pile 시각적 상한 |
+| 페이드 지연 | 8초 | 쌓이는 모습을 충분히 감상할 수 있는 시간 |
+| 꽃잎 크기 | 4–8px | 섬세하고 자연스러운 크기 |
+
+### 7.6 생성할 파일
+
+| 작업 | 파일 |
+|---|---|
+| 신규 생성 | `portfolio/src/components/public/CherryBlossom.tsx` |
+| 수정 | `portfolio/src/app/layout.tsx` (import + 컴포넌트 추가) |
+
+---
+
 ## 6. 리스크 & 주의사항
 
 1. **better-sqlite3 네이티브 바이너리:** Prisma 5.x의 기본 SQLite 드라이버는 `better-sqlite3`를 사용. Alpine 기반 Docker에서 컴파일 도구(`python3 make g++`) 필요 → `node:22-slim` (Debian) 사용 권장.
