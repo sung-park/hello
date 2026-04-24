@@ -1,6 +1,6 @@
 import { GoogleGenAI } from '@google/genai'
 
-const MODEL = 'gemini-2.5-flash-lite-preview-09-2025'
+const MODEL = 'gemini-2.5-flash-lite'
 
 export async function translateToEnglish(
   fields: Record<string, string>,
