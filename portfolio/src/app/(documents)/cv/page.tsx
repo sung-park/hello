@@ -8,6 +8,27 @@ import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
 
+interface ProjectBlock {
+  header: string | null
+  body: string
+}
+
+function parseProjectBlocks(description: string): ProjectBlock[] {
+  const trimmed = description.trim()
+  if (!trimmed) return []
+  if (!/^###\s/m.test(trimmed)) {
+    return [{ header: null, body: trimmed }]
+  }
+  const parts = trimmed.split(/\n(?=###\s)/g)
+  return parts.map((part) => {
+    const match = part.match(/^###\s*(.+?)(?:\n|$)([\s\S]*)$/)
+    if (match) {
+      return { header: match[1].trim(), body: match[2].trim() }
+    }
+    return { header: null, body: part.trim() }
+  })
+}
+
 export async function generateMetadata({
   searchParams,
 }: {
@@ -34,11 +55,9 @@ export default async function CvPage({ searchParams }: PageProps) {
   const [
     about,
     experiences,
-    education,
     certifications,
     awards,
     skillCategories,
-    projects,
     socialLinks,
     patents,
     languages,
@@ -46,16 +65,11 @@ export default async function CvPage({ searchParams }: PageProps) {
   ] = await Promise.all([
     db.about.findUnique({ where: { id: 'singleton' } }),
     db.experience.findMany({ where: { published: true }, orderBy: { order: 'asc' } }),
-    db.education.findMany({ where: { published: true }, orderBy: { order: 'asc' } }),
     db.certification.findMany({ where: { published: true }, orderBy: { order: 'asc' } }),
     db.award.findMany({ where: { published: true }, orderBy: { order: 'asc' } }),
     db.skillCategory.findMany({
       orderBy: { order: 'asc' },
       include: { skills: { orderBy: { order: 'asc' } } },
-    }),
-    db.project.findMany({
-      where: { published: true },
-      orderBy: [{ featured: 'desc' }, { order: 'asc' }],
     }),
     db.socialLink.findMany({ orderBy: { order: 'asc' } }),
     db.patent.findMany({ where: { published: true }, orderBy: { order: 'asc' } }),
@@ -74,7 +88,6 @@ export default async function CvPage({ searchParams }: PageProps) {
   const name = (isEn && about.nameEn) || about.name
   const subName = isEn ? about.name : about.nameEn
   const title = (isEn && about.titleEn) || about.title
-  const summary = (isEn && about.summaryEn) || about.summary
   const location = (isEn && about.locationEn) || about.location
 
   const githubLink = socialLinks.find((s) => s.platform.toLowerCase() === 'github')
@@ -89,7 +102,7 @@ export default async function CvPage({ searchParams }: PageProps) {
       <PrintButton lang={lang} />
 
       <article className="doc-paper mx-auto max-w-[210mm] bg-white p-12 shadow-sm print:p-0 print:shadow-none">
-        {/* Header */}
+        {/* Compact header */}
         <header className="mb-6 doc-section">
           <div className="flex items-end justify-between gap-6">
             <div>
@@ -147,18 +160,6 @@ export default async function CvPage({ searchParams }: PageProps) {
           </div>
         </header>
 
-        {/* Summary */}
-        {summary && (
-          <section className="doc-section mb-6">
-            <h2 className="mb-2 border-b border-slate-200 pb-1 text-xs font-bold uppercase tracking-wider text-slate-500">
-              {t('자기소개', 'Summary')}
-            </h2>
-            <div className="prose prose-sm max-w-none text-sm leading-relaxed text-slate-700 [&_p]:my-1">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{summary}</ReactMarkdown>
-            </div>
-          </section>
-        )}
-
         {/* Skills */}
         {skillCategories.length > 0 && (
           <section className="doc-section mb-6">
@@ -182,64 +183,61 @@ export default async function CvPage({ searchParams }: PageProps) {
           </section>
         )}
 
-        {/* Experience — full detail */}
+        {/* Experience — project-centric */}
         {experiences.length > 0 && (
           <section className="doc-section mb-6">
             <h2 className="mb-3 border-b border-slate-200 pb-1 text-xs font-bold uppercase tracking-wider text-slate-500">
-              {t('경력', 'Experience')}
+              {t('주요 프로젝트 / 업무', 'Projects & Work')}
             </h2>
-            <ol className="space-y-6">
+            <div className="space-y-7">
               {experiences.map((exp) => {
                 const company = (isEn && exp.companyEn) || exp.company
-                const role = (isEn && exp.roleEn) || exp.role
-                const expSummary = (isEn && exp.summaryEn) || exp.summary
-                const expDescription = (isEn && exp.descriptionEn) || exp.description
-                const expAchievements = (isEn && exp.achievementsEn) || exp.achievements
-                const expLocation = (isEn && exp.locationEn) || exp.location
-                const endLabel = exp.endDate ?? t('현재', 'Present')
+                const description = (isEn && exp.descriptionEn) || exp.description
+                const achievements = (isEn && exp.achievementsEn) || exp.achievements
+                const blocks = parseProjectBlocks(description)
                 const techList = exp.techStack
                   ? exp.techStack.split(',').map((s) => s.trim()).filter(Boolean)
                   : []
+                const endLabel = exp.endDate ?? t('현재', 'Present')
                 return (
-                  <li key={exp.id} className="doc-experience">
-                    <div className="flex items-baseline justify-between gap-3">
-                      <div>
-                        <h3 className="text-base font-semibold text-slate-900">
-                          {role}
-                          <span className="text-slate-700"> · {company}</span>
-                        </h3>
-                        {expLocation && (
-                          <div className="text-xs text-slate-500">{expLocation}</div>
-                        )}
-                      </div>
+                  <section key={exp.id}>
+                    <header className="mb-3 flex items-baseline justify-between gap-3 border-b border-slate-300 pb-1.5">
+                      <h3 className="text-base font-bold text-slate-900">{company}</h3>
                       <span className="shrink-0 text-xs text-slate-500">
                         {exp.startDate} — {endLabel}
                       </span>
+                    </header>
+
+                    <div className="space-y-5">
+                      {blocks.map((b, i) => (
+                        <div key={i} className="doc-experience">
+                          {b.header && (
+                            <h4 className="mb-1.5 text-sm font-semibold text-slate-800">
+                              {b.header}
+                            </h4>
+                          )}
+                          {b.body && (
+                            <div className="prose prose-sm max-w-none text-sm text-slate-700 [&_li]:my-0.5 [&_p]:my-1 [&_strong]:text-slate-900 [&_ul]:my-1">
+                              <ReactMarkdown remarkPlugins={[remarkGfm]}>{b.body}</ReactMarkdown>
+                            </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                    {expSummary && (
-                      <p className="mt-1 text-sm italic text-slate-700">{expSummary}</p>
-                    )}
-                    {expDescription && (
-                      <div className="prose prose-sm max-w-none mt-2 text-sm text-slate-700 [&_h3]:mt-3 [&_h3]:text-sm [&_h3]:font-semibold [&_li]:my-0.5 [&_p]:my-1 [&_strong]:text-slate-900 [&_ul]:my-1">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {expDescription}
-                        </ReactMarkdown>
-                      </div>
-                    )}
-                    {expAchievements && (
-                      <div className="mt-2">
+
+                    {achievements && (
+                      <div className="mt-4">
                         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
                           {t('핵심 성과', 'Key Achievements')}
                         </h4>
                         <div className="prose prose-sm max-w-none mt-1 text-sm text-slate-700 [&_li]:my-0.5 [&_p]:my-1 [&_ul]:my-1">
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                            {expAchievements}
-                          </ReactMarkdown>
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{achievements}</ReactMarkdown>
                         </div>
                       </div>
                     )}
+
                     {techList.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-1.5">
+                      <div className="mt-3 flex flex-wrap gap-1.5">
                         {techList.map((tech) => (
                           <span key={tech} className="doc-badge">
                             {tech}
@@ -247,10 +245,10 @@ export default async function CvPage({ searchParams }: PageProps) {
                         ))}
                       </div>
                     )}
-                  </li>
+                  </section>
                 )
               })}
-            </ol>
+            </div>
           </section>
         )}
 
@@ -323,49 +321,6 @@ export default async function CvPage({ searchParams }: PageProps) {
           </section>
         )}
 
-        {/* Projects — full detail */}
-        {projects.length > 0 && (
-          <section className="doc-section mb-6">
-            <h2 className="mb-3 border-b border-slate-200 pb-1 text-xs font-bold uppercase tracking-wider text-slate-500">
-              {t('프로젝트', 'Projects')}
-            </h2>
-            <ol className="space-y-4">
-              {projects.map((p) => {
-                const ptitle = (isEn && p.titleEn) || p.title
-                const pdesc = (isEn && p.descriptionEn) || p.description
-                const techList = p.techStack
-                  ? p.techStack.split(',').map((s) => s.trim()).filter(Boolean)
-                  : []
-                return (
-                  <li key={p.id} className="doc-project">
-                    <div className="flex items-baseline justify-between gap-3">
-                      <h3 className="text-base font-semibold text-slate-900">{ptitle}</h3>
-                      <div className="flex shrink-0 gap-3 text-xs text-slate-500">
-                        {p.repoUrl && <a href={p.repoUrl}>repo</a>}
-                        {p.liveUrl && <a href={p.liveUrl}>live</a>}
-                      </div>
-                    </div>
-                    {pdesc && (
-                      <div className="prose prose-sm max-w-none mt-1.5 text-sm text-slate-700 [&_blockquote]:border-l-2 [&_blockquote]:border-slate-300 [&_blockquote]:pl-3 [&_blockquote]:italic [&_li]:my-0.5 [&_p]:my-1 [&_ul]:my-1">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{pdesc}</ReactMarkdown>
-                      </div>
-                    )}
-                    {techList.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        {techList.map((tech) => (
-                          <span key={tech} className="doc-badge">
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </li>
-                )
-              })}
-            </ol>
-          </section>
-        )}
-
         {/* Publications */}
         {publications.length > 0 && (
           <section className="doc-section mb-6">
@@ -390,42 +345,6 @@ export default async function CvPage({ searchParams }: PageProps) {
                         {venue && <span className="text-slate-600"> · {venue}</span>}
                       </div>
                       <span className="shrink-0 text-xs text-slate-500">{p.date}</span>
-                    </div>
-                    {desc && (
-                      <div className="prose prose-sm max-w-none mt-1 text-sm text-slate-700 [&_p]:my-1">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{desc}</ReactMarkdown>
-                      </div>
-                    )}
-                  </li>
-                )
-              })}
-            </ul>
-          </section>
-        )}
-
-        {/* Education */}
-        {education.length > 0 && (
-          <section className="doc-section mb-6">
-            <h2 className="mb-2 border-b border-slate-200 pb-1 text-xs font-bold uppercase tracking-wider text-slate-500">
-              {t('학력', 'Education')}
-            </h2>
-            <ul className="space-y-2 text-sm">
-              {education.map((e) => {
-                const school = (isEn && e.schoolEn) || e.school
-                const degree = (isEn && e.degreeEn) || e.degree
-                const field = (isEn && e.fieldEn) || e.field
-                const desc = (isEn && e.descriptionEn) || e.description
-                return (
-                  <li key={e.id} className="doc-entry">
-                    <div className="flex items-baseline justify-between gap-3">
-                      <div>
-                        <span className="font-semibold text-slate-800">{school}</span>
-                        <span className="text-slate-600"> · {degree} · {field}</span>
-                        {e.gpa && <span className="text-slate-500"> · GPA {e.gpa}</span>}
-                      </div>
-                      <span className="shrink-0 text-xs text-slate-500">
-                        {e.startDate} — {e.endDate ?? t('재학중', 'Present')}
-                      </span>
                     </div>
                     {desc && (
                       <div className="prose prose-sm max-w-none mt-1 text-sm text-slate-700 [&_p]:my-1">
