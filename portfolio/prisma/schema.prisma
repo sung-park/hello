@@ -184,6 +184,7 @@ model Patent {
   patentNumber  String   @default("")
   country       String   @default("")
   status        String   @default("granted")
+  count         Int      @default(1)
   filingDate    String   @default("")
   grantDate     String   @default("")
   inventors     String   @default("")

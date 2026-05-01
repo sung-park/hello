@@ -57,11 +57,19 @@ export default async function PatentAdminPage() {
               </div>
 
               <div className="flex-1">
-                <div className="font-medium text-slate-200">{item.title}</div>
-                <div className="text-sm text-slate-500">
-                  {item.country && `${item.country} `}
-                  {item.patentNumber && `· ${item.patentNumber} `}
-                  · {item.status === 'granted' ? '등록' : '출원'}
+                <div className="font-medium text-slate-200">
+                  {item.title}
+                  {item.count > 1 && (
+                    <span className="ml-2 text-sm text-slate-400">{item.count}건</span>
+                  )}
+                </div>
+                {item.summary && (
+                  <div className="text-sm text-slate-400">{item.summary}</div>
+                )}
+                <div className="text-xs text-slate-500">
+                  {item.country && `${item.country} · `}
+                  {item.patentNumber && `${item.patentNumber} · `}
+                  {item.status === 'granted' ? '등록' : item.status === 'filed' ? '출원' : '출원/등록'}
                   {item.grantDate && ` · ${item.grantDate}`}
                 </div>
                 {!item.published && <span className="text-xs text-amber-400">비공개</span>}

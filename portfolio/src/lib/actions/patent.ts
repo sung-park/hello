@@ -25,11 +25,14 @@ async function translateAndSave(id: string, fields: Record<string, string>) {
 }
 
 function readForm(formData: FormData) {
+  const countRaw = formData.get('count') as string | null
+  const count = countRaw && countRaw.trim() !== '' ? Number(countRaw) : 1
   return {
     title: formData.get('title') as string,
     patentNumber: (formData.get('patentNumber') as string) || '',
     country: (formData.get('country') as string) || '',
     status: (formData.get('status') as string) || 'granted',
+    count: Number.isFinite(count) && count > 0 ? count : 1,
     filingDate: (formData.get('filingDate') as string) || '',
     grantDate: (formData.get('grantDate') as string) || '',
     inventors: (formData.get('inventors') as string) || '',

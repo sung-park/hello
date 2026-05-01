@@ -237,38 +237,35 @@ export default async function ResumePage({ searchParams }: PageProps) {
             <h2 className="mb-2 border-b border-slate-200 pb-1 text-xs font-bold uppercase tracking-wider text-slate-500">
               {t('특허', 'Patents')}
               <span className="ml-2 font-normal normal-case text-slate-400">
-                ({patents.length}
+                ({patents.reduce((acc, p) => acc + (p.count || 1), 0)}
                 {t('건', '')})
               </span>
             </h2>
-            <ul className="space-y-1.5 text-sm">
-              {patents.slice(0, 6).map((p) => {
+            <ul className="space-y-1 text-sm">
+              {patents.map((p) => {
                 const ptitle = (isEn && p.titleEn) || p.title
+                const psummary = (isEn && p.summaryEn) || p.summary
+                const statusLabel =
+                  p.status === 'mixed'
+                    ? t('출원/등록', 'Filed/Granted')
+                    : p.status === 'filed'
+                      ? t('출원', 'Filed')
+                      : t('등록', 'Granted')
                 return (
-                  <li key={p.id} className="doc-entry flex items-baseline justify-between gap-3">
-                    <div>
-                      <span className="font-semibold text-slate-800">{ptitle}</span>
-                      {p.country && (
-                        <span className="text-slate-500"> · {p.country}</span>
-                      )}
-                      {p.patentNumber && (
-                        <span className="text-slate-500"> · {p.patentNumber}</span>
-                      )}
-                      {p.status === 'filed' && (
-                        <span className="text-slate-500"> · {t('출원', 'Filed')}</span>
-                      )}
-                    </div>
-                    <span className="shrink-0 text-xs text-slate-500">
-                      {p.grantDate || p.filingDate}
+                  <li key={p.id} className="doc-entry">
+                    <span className="font-semibold text-slate-800">{ptitle}:</span>{' '}
+                    {psummary && <span className="text-slate-700">{psummary} </span>}
+                    <span className="text-slate-600">
+                      ({p.count}
+                      {t('건', '')} {statusLabel}
+                      {p.country && ` · ${p.country}`}
+                      {p.patentNumber && ` · ${p.patentNumber}`}
+                      {(p.grantDate || p.filingDate) && ` · ${p.grantDate || p.filingDate}`}
+                      )
                     </span>
                   </li>
                 )
               })}
-              {patents.length > 6 && (
-                <li className="text-xs text-slate-500">
-                  {t(`외 ${patents.length - 6}건`, `+ ${patents.length - 6} more`)}
-                </li>
-              )}
             </ul>
           </section>
         )}

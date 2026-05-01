@@ -246,6 +246,7 @@ async function migrate() {
     `ALTER TABLE "Experience" ADD COLUMN "locationEn" TEXT NOT NULL DEFAULT ''`,
     `ALTER TABLE "Experience" ADD COLUMN "summaryEn" TEXT NOT NULL DEFAULT ''`,
     `ALTER TABLE "Experience" ADD COLUMN "achievementsEn" TEXT NOT NULL DEFAULT ''`,
+    `ALTER TABLE "Patent" ADD COLUMN "count" INTEGER NOT NULL DEFAULT 1`,
   ]
   for (const sql of alters) {
     try { await client.execute(sql) } catch (_) { /* 컬럼 이미 존재 시 skip */ }
