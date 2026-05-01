@@ -221,6 +221,15 @@ export default async function CvPage({ searchParams }: PageProps) {
                               <ReactMarkdown remarkPlugins={[remarkGfm]}>{b.body}</ReactMarkdown>
                             </div>
                           )}
+                          {techList.length > 0 && (
+                            <div className="mt-2 flex flex-wrap gap-1.5">
+                              {techList.map((tech) => (
+                                <span key={tech} className="doc-badge">
+                                  {tech}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -233,16 +242,6 @@ export default async function CvPage({ searchParams }: PageProps) {
                         <div className="prose prose-sm max-w-none mt-1 text-sm text-slate-700 [&_li]:my-0.5 [&_p]:my-1 [&_ul]:my-1">
                           <ReactMarkdown remarkPlugins={[remarkGfm]}>{achievements}</ReactMarkdown>
                         </div>
-                      </div>
-                    )}
-
-                    {techList.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-1.5">
-                        {techList.map((tech) => (
-                          <span key={tech} className="doc-badge">
-                            {tech}
-                          </span>
-                        ))}
                       </div>
                     )}
                   </section>
