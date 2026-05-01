@@ -108,16 +108,6 @@ export function ExperienceForm({ experience, action }: Props) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="techStack">기술 스택 (쉼표로 구분)</Label>
-        <Input
-          id="techStack"
-          name="techStack"
-          defaultValue={experience?.techStack ?? ''}
-          placeholder="TypeScript, React, Node.js"
-        />
-      </div>
-
-      <div className="space-y-2">
         <Label>주요 업무 / 프로젝트 (마크다운)</Label>
         <p className="text-xs text-slate-400">
           / 메인과 /cv 경력기술서에 노출. 시기별 또는 프로젝트별 구조 권장.

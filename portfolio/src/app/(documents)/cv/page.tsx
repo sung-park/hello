@@ -195,9 +195,6 @@ export default async function CvPage({ searchParams }: PageProps) {
                 const description = (isEn && exp.descriptionEn) || exp.description
                 const achievements = (isEn && exp.achievementsEn) || exp.achievements
                 const blocks = parseProjectBlocks(description)
-                const techList = exp.techStack
-                  ? exp.techStack.split(',').map((s) => s.trim()).filter(Boolean)
-                  : []
                 const endLabel = exp.endDate ?? t('현재', 'Present')
                 return (
                   <section key={exp.id}>
@@ -219,15 +216,6 @@ export default async function CvPage({ searchParams }: PageProps) {
                           {b.body && (
                             <div className="prose prose-sm max-w-none text-sm text-slate-700 [&_li]:my-0.5 [&_p]:my-1 [&_strong]:text-slate-900 [&_ul]:my-1">
                               <ReactMarkdown remarkPlugins={[remarkGfm]}>{b.body}</ReactMarkdown>
-                            </div>
-                          )}
-                          {techList.length > 0 && (
-                            <div className="mt-2 flex flex-wrap gap-1.5">
-                              {techList.map((tech) => (
-                                <span key={tech} className="doc-badge">
-                                  {tech}
-                                </span>
-                              ))}
                             </div>
                           )}
                         </div>
