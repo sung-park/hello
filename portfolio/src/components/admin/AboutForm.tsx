@@ -15,10 +15,12 @@ interface Props {
 export function AboutForm({ about }: Props) {
   const [isPending, startTransition] = useTransition()
   const [bio, setBio] = useState(about?.bio ?? '')
+  const [summary, setSummary] = useState(about?.summary ?? '')
   const [saved, setSaved] = useState(false)
 
   function handleSubmit(formData: FormData) {
     formData.set('bio', bio)
+    formData.set('summary', summary)
     startTransition(async () => {
       await updateAbout(formData)
       setSaved(true)
@@ -59,6 +61,16 @@ export function AboutForm({ about }: Props) {
             placeholder="Software Engineer"
           />
         </div>
+        <div className="space-y-2">
+          <Label htmlFor="birthYear">출생년도 (선택)</Label>
+          <Input
+            id="birthYear"
+            name="birthYear"
+            type="number"
+            defaultValue={about?.birthYear ?? ''}
+            placeholder="1980"
+          />
+        </div>
       </div>
 
       <div className="space-y-2">
@@ -71,8 +83,48 @@ export function AboutForm({ about }: Props) {
         />
       </div>
 
+      <div className="grid gap-4 md:grid-cols-3">
+        <div className="space-y-2">
+          <Label htmlFor="email">이메일</Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            defaultValue={about?.email ?? ''}
+            placeholder="name@example.com"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="phone">전화번호</Label>
+          <Input
+            id="phone"
+            name="phone"
+            defaultValue={about?.phone ?? ''}
+            placeholder="010-0000-0000"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="location">거주지 (KO)</Label>
+          <Input
+            id="location"
+            name="location"
+            defaultValue={about?.location ?? ''}
+            placeholder="서울, 대한민국"
+          />
+        </div>
+      </div>
+
       <div className="space-y-2">
-        <Label>자기소개 (마크다운)</Label>
+        <Label>이력서용 자기소개 (3-4줄, 마크다운)</Label>
+        <p className="text-xs text-slate-400">
+          이력서/경력기술서 헤더 바로 아래에 노출됩니다. 연차 + 핵심 도메인 + 강점을 압축.
+        </p>
+        <MarkdownEditor value={summary} onChange={setSummary} />
+      </div>
+
+      <div className="space-y-2">
+        <Label>홈페이지 자기소개 (마크다운)</Label>
+        <p className="text-xs text-slate-400">/ 메인 페이지의 About 섹션에 노출.</p>
         <MarkdownEditor value={bio} onChange={setBio} />
       </div>
 
@@ -87,7 +139,7 @@ export function AboutForm({ about }: Props) {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="resumeUrl">이력서 URL</Label>
+          <Label htmlFor="resumeUrl">이력서 URL (외부 링크, 선택)</Label>
           <Input
             id="resumeUrl"
             name="resumeUrl"

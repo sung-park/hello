@@ -1,8 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 
 export function SpotlightEffect() {
+  const pathname = usePathname()
   const [pos, setPos] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
@@ -10,6 +12,8 @@ export function SpotlightEffect() {
     window.addEventListener('mousemove', handler)
     return () => window.removeEventListener('mousemove', handler)
   }, [])
+
+  if (pathname === '/resume' || pathname === '/cv' || pathname.startsWith('/admin')) return null
 
   return (
     <div

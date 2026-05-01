@@ -44,3 +44,7 @@ prisma/portfolio.db
 prisma/*.db
 src/generated/
 .env
+
+# local data (pulled from production)
+/data/
+

@@ -8,35 +8,49 @@ datasource db {
 }
 
 model About {
-  id        String   @id @default("singleton")
-  name      String   @default("")
-  title     String   @default("")
-  tagline   String   @default("")
-  bio       String   @default("")
-  avatarUrl String?
-  resumeUrl String?
-  nameEn    String   @default("")
-  titleEn   String   @default("")
-  taglineEn String   @default("")
-  bioEn     String   @default("")
-  updatedAt DateTime @updatedAt
+  id          String   @id @default("singleton")
+  name        String   @default("")
+  title       String   @default("")
+  tagline     String   @default("")
+  bio         String   @default("")
+  avatarUrl   String?
+  resumeUrl   String?
+  email       String   @default("")
+  phone       String   @default("")
+  location    String   @default("")
+  birthYear   Int?
+  summary     String   @default("")
+  nameEn      String   @default("")
+  titleEn     String   @default("")
+  taglineEn   String   @default("")
+  bioEn       String   @default("")
+  locationEn  String   @default("")
+  summaryEn   String   @default("")
+  updatedAt   DateTime @updatedAt
 }
 
 model Experience {
-  id            String   @id @default(cuid())
-  company       String
-  role          String
-  startDate     String
-  endDate       String?
-  description   String
-  techStack     String
-  order         Int      @default(0)
-  published     Boolean  @default(true)
-  roleEn        String   @default("")
-  companyEn     String   @default("")
-  descriptionEn String   @default("")
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id              String   @id @default(cuid())
+  company         String
+  role            String
+  startDate       String
+  endDate         String?
+  description     String
+  techStack       String
+  location        String   @default("")
+  current         Boolean  @default(false)
+  summary         String   @default("")
+  achievements    String   @default("")
+  order           Int      @default(0)
+  published       Boolean  @default(true)
+  roleEn          String   @default("")
+  companyEn       String   @default("")
+  descriptionEn   String   @default("")
+  locationEn      String   @default("")
+  summaryEn       String   @default("")
+  achievementsEn  String   @default("")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Project {
@@ -87,4 +101,129 @@ model Setting {
   key       String   @id
   value     String
   updatedAt DateTime @updatedAt
+}
+
+model Education {
+  id            String   @id @default(cuid())
+  school        String
+  degree        String
+  field         String
+  startDate     String
+  endDate       String?
+  gpa           String   @default("")
+  description   String   @default("")
+  schoolEn      String   @default("")
+  degreeEn      String   @default("")
+  fieldEn       String   @default("")
+  descriptionEn String   @default("")
+  order         Int      @default(0)
+  published     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Certification {
+  id             String   @id @default(cuid())
+  name           String
+  issuer         String
+  issueDate      String
+  expiryDate     String?
+  credentialId   String   @default("")
+  credentialUrl  String   @default("")
+  nameEn         String   @default("")
+  issuerEn       String   @default("")
+  order          Int      @default(0)
+  published      Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Award {
+  id            String   @id @default(cuid())
+  title         String
+  issuer        String
+  date          String
+  description   String   @default("")
+  titleEn       String   @default("")
+  issuerEn      String   @default("")
+  descriptionEn String   @default("")
+  order         Int      @default(0)
+  published     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model SkillCategory {
+  id        String   @id @default(cuid())
+  name      String
+  nameEn    String   @default("")
+  order     Int      @default(0)
+  skills    Skill[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Skill {
+  id         String        @id @default(cuid())
+  categoryId String
+  category   SkillCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  name       String
+  nameEn     String        @default("")
+  level      Int?
+  years      Int?
+  order      Int           @default(0)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@index([categoryId])
+}
+
+model Patent {
+  id            String   @id @default(cuid())
+  title         String
+  patentNumber  String   @default("")
+  country       String   @default("")
+  status        String   @default("granted")
+  filingDate    String   @default("")
+  grantDate     String   @default("")
+  inventors     String   @default("")
+  url           String   @default("")
+  summary       String   @default("")
+  titleEn       String   @default("")
+  inventorsEn   String   @default("")
+  summaryEn     String   @default("")
+  order         Int      @default(0)
+  published     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Language {
+  id          String   @id @default(cuid())
+  name        String
+  proficiency String
+  testName    String   @default("")
+  score       String   @default("")
+  nameEn      String   @default("")
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Publication {
+  id            String   @id @default(cuid())
+  title         String
+  type          String   @default("talk")
+  venue         String   @default("")
+  date          String
+  description   String   @default("")
+  url           String   @default("")
+  titleEn       String   @default("")
+  venueEn       String   @default("")
+  descriptionEn String   @default("")
+  order         Int      @default(0)
+  published     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }

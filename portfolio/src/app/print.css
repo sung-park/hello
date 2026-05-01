@@ -1,0 +1,108 @@
+/* Print-optimized styles for /resume and /cv */
+
+.doc-paper {
+  background: #ffffff;
+  color: #1f2937;
+}
+
+.doc-paper a {
+  color: #1f2937;
+  text-decoration: none;
+}
+
+.doc-paper h1,
+.doc-paper h2,
+.doc-paper h3 {
+  color: #0f172a;
+}
+
+.doc-paper .doc-section + .doc-section {
+  margin-top: 1.25rem;
+}
+
+.doc-paper .doc-rule {
+  border-top: 1px solid #e5e7eb;
+}
+
+.doc-paper .doc-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 9999px;
+  padding: 0.125rem 0.625rem;
+  font-size: 11px;
+  color: #334155;
+  background: #ffffff;
+}
+
+@page {
+  size: A4;
+  margin: 16mm 14mm;
+}
+
+@media print {
+  html,
+  body {
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+
+  body {
+    font-size: 10.5pt;
+    line-height: 1.45;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .doc-paper {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+  }
+
+  .doc-paper h1 {
+    font-size: 18pt;
+  }
+
+  .doc-paper h2 {
+    font-size: 12pt;
+  }
+
+  .doc-paper h3 {
+    font-size: 11pt;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-page-break {
+    break-before: page;
+    page-break-before: always;
+  }
+
+  .doc-entry,
+  .doc-experience,
+  .doc-project {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  a {
+    color: #111111 !important;
+    text-decoration: none !important;
+  }
+
+  a[href]::after {
+    content: '' !important;
+  }
+
+  .doc-paper .doc-badge {
+    border-color: #94a3b8 !important;
+    color: #1f2937 !important;
+    background: transparent !important;
+  }
+}

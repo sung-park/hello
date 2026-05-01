@@ -11,6 +11,9 @@ export async function updateAbout(formData: FormData) {
   if (!session) redirect('/admin/login')
 
   const nameEn = (formData.get('nameEn') as string) || ''
+  const birthYearRaw = formData.get('birthYear') as string | null
+  const birthYear = birthYearRaw && birthYearRaw.trim() !== '' ? Number(birthYearRaw) : null
+
   const data = {
     name: formData.get('name') as string,
     title: formData.get('title') as string,
@@ -18,6 +21,11 @@ export async function updateAbout(formData: FormData) {
     bio: formData.get('bio') as string,
     avatarUrl: (formData.get('avatarUrl') as string) || null,
     resumeUrl: (formData.get('resumeUrl') as string) || null,
+    email: (formData.get('email') as string) || '',
+    phone: (formData.get('phone') as string) || '',
+    location: (formData.get('location') as string) || '',
+    summary: (formData.get('summary') as string) || '',
+    birthYear: birthYear !== null && Number.isFinite(birthYear) ? birthYear : null,
   }
 
   await db.about.upsert({
@@ -31,6 +39,8 @@ export async function updateAbout(formData: FormData) {
       title: data.title,
       tagline: data.tagline,
       bio: data.bio,
+      location: data.location,
+      summary: data.summary,
     })
     await db.about.update({
       where: { id: 'singleton' },
@@ -39,6 +49,8 @@ export async function updateAbout(formData: FormData) {
         titleEn: translated.title ?? '',
         taglineEn: translated.tagline ?? '',
         bioEn: translated.bio ?? '',
+        locationEn: translated.location ?? '',
+        summaryEn: translated.summary ?? '',
       },
     })
   } catch (e) {
@@ -46,4 +58,6 @@ export async function updateAbout(formData: FormData) {
   }
 
   revalidatePath('/')
+  revalidatePath('/resume')
+  revalidatePath('/cv')
 }

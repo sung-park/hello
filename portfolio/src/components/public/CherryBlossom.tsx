@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 
 interface FallingPetal {
   x: number
@@ -61,9 +62,12 @@ function drawPetal(
 }
 
 export function CherryBlossom() {
+  const pathname = usePathname()
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const skip = pathname === '/resume' || pathname === '/cv' || pathname.startsWith('/admin')
 
   useEffect(() => {
+    if (skip) return
     if (!canvasRef.current) return
     const canvas: HTMLCanvasElement = canvasRef.current
 
@@ -158,7 +162,8 @@ export function CherryBlossom() {
       cancelAnimationFrame(animId)
       window.removeEventListener('resize', resize)
     }
-  }, [])
+  }, [skip])
 
+  if (skip) return null
   return <canvas ref={canvasRef} className="pointer-events-none fixed inset-0 z-10" />
 }
