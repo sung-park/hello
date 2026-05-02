@@ -102,6 +102,13 @@ export default async function CvPage({ searchParams }: PageProps) {
       <PrintButton lang={lang} />
 
       <article className="doc-paper doc-cv mx-auto max-w-[210mm] bg-white p-12 shadow-sm print:p-0 print:shadow-none">
+        {/* Document title */}
+        <div className="mb-8 text-center">
+          <p className="text-2xl font-bold tracking-wide text-slate-900">
+            {t('경력기술서', 'Curriculum Vitae')}
+          </p>
+        </div>
+
         {/* Compact header */}
         <header className="mb-6 doc-section">
           <div className="flex items-end justify-between gap-6">
