@@ -39,9 +39,10 @@ export async function createAward(formData: FormData) {
   if (!session) redirect('/admin/login')
 
   const f = readForm(formData)
-  const count = await db.award.count()
+  const maxOrder = await db.award.aggregate({ _max: { order: true } })
+  const order = (maxOrder._max.order ?? -1) + 1
 
-  const created = await db.award.create({ data: { ...f, order: count } })
+  const created = await db.award.create({ data: { ...f, order } })
 
   await translateAndSave(created.id, {
     title: f.title,

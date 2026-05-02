@@ -47,9 +47,10 @@ export async function createPatent(formData: FormData) {
   if (!session) redirect('/admin/login')
 
   const f = readForm(formData)
-  const count = await db.patent.count()
+  const maxOrder = await db.patent.aggregate({ _max: { order: true } })
+  const order = (maxOrder._max.order ?? -1) + 1
 
-  const created = await db.patent.create({ data: { ...f, order: count } })
+  const created = await db.patent.create({ data: { ...f, order } })
 
   await translateAndSave(created.id, {
     title: f.title,

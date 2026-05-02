@@ -48,7 +48,8 @@ export async function createExperience(formData: FormData) {
   if (!session) redirect('/admin/login')
 
   const f = readForm(formData)
-  const count = await db.experience.count()
+  const maxOrder = await db.experience.aggregate({ _max: { order: true } })
+  const order = (maxOrder._max.order ?? -1) + 1
 
   const created = await db.experience.create({
     data: {
@@ -63,7 +64,7 @@ export async function createExperience(formData: FormData) {
       summary: f.summary,
       achievements: f.achievements,
       published: f.published,
-      order: count,
+      order,
     },
   })
 

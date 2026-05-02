@@ -32,8 +32,9 @@ export async function createLanguage(formData: FormData) {
   if (!session) redirect('/admin/login')
 
   const f = readForm(formData)
-  const count = await db.language.count()
-  const created = await db.language.create({ data: { ...f, order: count } })
+  const maxOrder = await db.language.aggregate({ _max: { order: true } })
+  const order = (maxOrder._max.order ?? -1) + 1
+  const created = await db.language.create({ data: { ...f, order } })
 
   await translateAndSave(created.id, { name: f.name })
 

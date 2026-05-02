@@ -40,10 +40,11 @@ export async function createCertification(formData: FormData) {
   if (!session) redirect('/admin/login')
 
   const f = readForm(formData)
-  const count = await db.certification.count()
+  const maxOrder = await db.certification.aggregate({ _max: { order: true } })
+  const order = (maxOrder._max.order ?? -1) + 1
 
   const created = await db.certification.create({
-    data: { ...f, order: count },
+    data: { ...f, order },
   })
 
   await translateAndSave(created.id, { name: f.name, issuer: f.issuer })
