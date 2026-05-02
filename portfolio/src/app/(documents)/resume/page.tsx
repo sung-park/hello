@@ -201,7 +201,7 @@ export default async function ResumePage({ searchParams }: PageProps) {
                 const expLocation = (isEn && exp.locationEn) || exp.location
                 const endLabel = exp.endDate ?? t('현재', 'Present')
                 return (
-                  <li key={exp.id} className="doc-entry">
+                  <li key={exp.id} className="doc-entry doc-exp-entry">
                     <div className="doc-exp-header flex items-baseline justify-between gap-3">
                       <div>
                         <span className="font-semibold text-slate-900">{role}</span>
