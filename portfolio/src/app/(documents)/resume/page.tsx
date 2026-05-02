@@ -231,42 +231,29 @@ export default async function ResumePage({ searchParams }: PageProps) {
           </section>
         )}
 
-        {/* Patents */}
+        {/* Patents — one-line summary */}
         {patents.length > 0 && (
           <section className="doc-section mb-5">
             <h2 className="mb-2 border-b border-slate-200 pb-1 text-xs font-bold uppercase tracking-wider text-slate-500">
               {t('특허', 'Patents')}
-              <span className="ml-2 font-normal normal-case text-slate-400">
-                ({patents.reduce((acc, p) => acc + (p.count || 1), 0)}
-                {t('건', '')})
-              </span>
             </h2>
-            <ul className="space-y-1 text-sm">
-              {patents.map((p) => {
-                const ptitle = (isEn && p.titleEn) || p.title
-                const psummary = (isEn && p.summaryEn) || p.summary
-                const statusLabel =
-                  p.status === 'mixed'
-                    ? t('출원/등록', 'Filed/Granted')
-                    : p.status === 'filed'
-                      ? t('출원', 'Filed')
-                      : t('등록', 'Granted')
-                return (
-                  <li key={p.id} className="doc-entry">
-                    <span className="font-semibold text-slate-800">{ptitle}:</span>{' '}
-                    {psummary && <span className="text-slate-700">{psummary} </span>}
-                    <span className="text-slate-600">
-                      ({p.count}
-                      {t('건', '')} {statusLabel}
-                      {p.country && ` · ${p.country}`}
-                      {p.patentNumber && ` · ${p.patentNumber}`}
-                      {(p.grantDate || p.filingDate) && ` · ${p.grantDate || p.filingDate}`}
-                      )
-                    </span>
-                  </li>
-                )
-              })}
-            </ul>
+            {(() => {
+              const total = patents.reduce((acc, p) => acc + (p.count || 1), 0)
+              const granted = patents.filter((p) => p.status === 'granted').reduce((acc, p) => acc + (p.count || 1), 0)
+              const filed = patents.filter((p) => p.status === 'filed').reduce((acc, p) => acc + (p.count || 1), 0)
+              const mixed = patents.filter((p) => p.status === 'mixed').reduce((acc, p) => acc + (p.count || 1), 0)
+              const parts = [
+                granted > 0 && `${t('등록', 'Granted')} ${granted}${t('건', '')}`,
+                filed > 0 && `${t('출원', 'Filed')} ${filed}${t('건', '')}`,
+                mixed > 0 && `${t('출원/등록', 'Filed/Granted')} ${mixed}${t('건', '')}`,
+              ].filter(Boolean)
+              return (
+                <p className="text-sm text-slate-700">
+                  {isEn ? `${total} patents total` : `국내외 특허 총 ${total}건 보유`}
+                  {parts.length > 0 && ` (${parts.join(' · ')})`}
+                </p>
+              )
+            })()}
           </section>
         )}
 
