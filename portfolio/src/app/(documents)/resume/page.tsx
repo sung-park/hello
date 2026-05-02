@@ -90,7 +90,7 @@ export default async function ResumePage({ searchParams }: PageProps) {
       <DocLanguageToggle lang={lang} />
       <PrintButton lang={lang} />
 
-      <article className="doc-paper mx-auto max-w-[210mm] bg-white p-12 shadow-sm print:p-0 print:shadow-none">
+      <article className="doc-paper doc-resume mx-auto max-w-[210mm] bg-white p-12 shadow-sm print:p-0 print:shadow-none">
         {/* Header */}
         <header className="mb-6 doc-section">
           <div className="flex items-end justify-between gap-6">
@@ -202,7 +202,7 @@ export default async function ResumePage({ searchParams }: PageProps) {
                 const endLabel = exp.endDate ?? t('현재', 'Present')
                 return (
                   <li key={exp.id} className="doc-entry">
-                    <div className="flex items-baseline justify-between gap-3">
+                    <div className="doc-exp-header flex items-baseline justify-between gap-3">
                       <div>
                         <span className="font-semibold text-slate-900">{role}</span>
                         <span className="text-slate-700"> · {company}</span>

@@ -146,3 +146,55 @@
     background: transparent !important;
   }
 }
+
+/* ── Resume-specific print overrides ─────────────────────── */
+@media print {
+  .doc-resume {
+    line-height: 1.6;
+  }
+
+  .doc-resume h2 {
+    font-size: 13pt;
+    font-weight: bold;
+    letter-spacing: 0.03em;
+  }
+
+  /* Experience: role + company row — 12.5pt Bold */
+  .doc-resume .doc-exp-header > div {
+    font-size: 12.5pt;
+    font-weight: bold;
+  }
+
+  /* Dates — 10.5pt #555555 */
+  .doc-resume .doc-entry .shrink-0 {
+    font-size: 10.5pt;
+    color: #555555 !important;
+  }
+
+  /* Content entries (patents, education, etc.) — 10.8pt lh 1.5 */
+  .doc-resume .doc-entry {
+    font-size: 10.8pt;
+    line-height: 1.5;
+  }
+
+  /* Prose (achievements, summary) — 10.8pt lh 1.5 */
+  .doc-resume .prose {
+    font-size: 10.8pt;
+    line-height: 1.5;
+  }
+
+  /* Paragraph spacing — 1 line gap */
+  .doc-resume .prose p {
+    margin-top: 0;
+    margin-bottom: 1em;
+  }
+
+  /* Bullet indent 0.5cm */
+  .doc-resume .prose ul {
+    padding-left: 0;
+  }
+
+  .doc-resume .prose ul > li {
+    padding-left: 0.5cm;
+  }
+}
