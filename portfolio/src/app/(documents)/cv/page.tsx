@@ -193,7 +193,6 @@ export default async function CvPage({ searchParams }: PageProps) {
               {experiences.map((exp) => {
                 const company = (isEn && exp.companyEn) || exp.company
                 const description = (isEn && exp.descriptionEn) || exp.description
-                const achievements = (isEn && exp.achievementsEn) || exp.achievements
                 const blocks = parseProjectBlocks(description)
                 const endLabel = exp.endDate ?? t('현재', 'Present')
                 return (
@@ -222,16 +221,7 @@ export default async function CvPage({ searchParams }: PageProps) {
                       ))}
                     </div>
 
-                    {achievements && (
-                      <div className="mt-4">
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                          {t('핵심 성과', 'Key Achievements')}
-                        </h4>
-                        <div className="prose prose-sm max-w-none mt-1 text-sm text-slate-700 [&_li]:my-0.5 [&_p]:my-1 [&_ul]:my-1">
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{achievements}</ReactMarkdown>
-                        </div>
-                      </div>
-                    )}
+
                   </section>
                 )
               })}
