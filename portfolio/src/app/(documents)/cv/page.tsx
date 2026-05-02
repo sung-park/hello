@@ -106,9 +106,9 @@ export default async function CvPage({ searchParams }: PageProps) {
         <header className="mb-6 doc-section">
           <div className="flex items-end justify-between gap-6">
             <div>
-              <h1 className="text-2xl font-bold leading-tight text-slate-900">{name}</h1>
+              <h1 className="text-3xl font-bold leading-tight text-slate-900">{name}</h1>
               {subName && <div className="mt-0.5 text-sm text-slate-500">{subName}</div>}
-              <div className="mt-1.5 text-sm font-medium text-slate-700">{title}</div>
+              <div className="mt-2 text-base font-medium text-slate-700">{title}</div>
             </div>
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600">
