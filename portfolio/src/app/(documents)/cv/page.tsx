@@ -101,7 +101,7 @@ export default async function CvPage({ searchParams }: PageProps) {
       <DocLanguageToggle lang={lang} />
       <PrintButton lang={lang} />
 
-      <article className="doc-paper mx-auto max-w-[210mm] bg-white p-12 shadow-sm print:p-0 print:shadow-none">
+      <article className="doc-paper doc-cv mx-auto max-w-[210mm] bg-white p-12 shadow-sm print:p-0 print:shadow-none">
         {/* Compact header */}
         <header className="mb-6 doc-section">
           <div className="flex items-end justify-between gap-6">

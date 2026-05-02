@@ -204,6 +204,64 @@
   padding-left: 0.5cm;
 }
 
+/* ── CV: screen + print consistent typography ───────────── */
+
+.doc-cv {
+  line-height: 1.6;
+}
+
+.doc-cv h2 {
+  font-size: 13pt;
+  font-weight: bold;
+  letter-spacing: 0.03em;
+}
+
+/* Company name (h3) — 12.5pt Bold */
+.doc-cv h3 {
+  font-size: 12.5pt;
+  font-weight: bold;
+}
+
+/* Project title (h4) — 12pt Bold + spacing */
+.doc-cv h4 {
+  font-size: 12pt;
+  font-weight: bold;
+  margin-top: 0.6em;
+  margin-bottom: 0.3em;
+}
+
+/* Dates — 10.5pt #555555 */
+.doc-cv header .shrink-0,
+.doc-cv .doc-entry .shrink-0 {
+  font-size: 10.5pt;
+  color: #555555;
+}
+
+/* Content — 10.8pt lh 1.5 */
+.doc-cv .prose {
+  font-size: 10.8pt;
+  line-height: 1.5;
+}
+
+.doc-cv .prose p {
+  margin-top: 0;
+  margin-bottom: 0.25em;
+}
+
+.doc-cv .prose ul + p,
+.doc-cv .prose ol + p {
+  margin-top: 0.75em;
+}
+
+/* Bullet indent 0.5cm */
+.doc-cv .prose ul {
+  padding-left: 0;
+}
+
+.doc-cv .prose ul > li {
+  padding-left: 0.5cm;
+}
+
 /* ── Resume: print-only page break rules ─────────────────── */
 @media print {
   /* Allow long experience entries to flow across pages naturally */
@@ -214,6 +272,18 @@
 
   /* Keep role/company/date header attached to the first line below */
   .doc-resume .doc-exp-header {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* CV: allow long project blocks to flow across pages */
+  .doc-cv .doc-experience {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  /* Keep project title (h4) attached to content below */
+  .doc-cv h4 {
     break-after: avoid;
     page-break-after: avoid;
   }
