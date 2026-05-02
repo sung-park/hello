@@ -184,10 +184,15 @@
   line-height: 1.5;
 }
 
-/* Paragraph spacing — 1 line gap */
+/* Paragraph spacing — tight below title-paragraphs, gap after lists */
 .doc-resume .prose p {
   margin-top: 0;
-  margin-bottom: 1em;
+  margin-bottom: 0.25em;
+}
+
+.doc-resume .prose ul + p,
+.doc-resume .prose ol + p {
+  margin-top: 0.75em;
 }
 
 /* Bullet indent 0.5cm */
