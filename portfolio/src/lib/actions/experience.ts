@@ -32,7 +32,7 @@ function readForm(formData: FormData) {
     company: formData.get('company') as string,
     role: formData.get('role') as string,
     description: formData.get('description') as string,
-    techStack: formData.get('techStack') as string,
+    techStack: (formData.get('techStack') as string) || '',
     startDate: formData.get('startDate') as string,
     endDate: (formData.get('endDate') as string) || null,
     location: (formData.get('location') as string) || '',

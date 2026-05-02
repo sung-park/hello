@@ -2,7 +2,8 @@ import { db } from '@/lib/db'
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Plus, Pencil, Trash2, ChevronUp, ChevronDown } from 'lucide-react'
+import { Plus, Pencil, ChevronUp, ChevronDown } from 'lucide-react'
+import { DeleteButton } from '@/components/admin/DeleteButton'
 import { Button } from '@/components/ui/button'
 import { deleteCertification, moveCertification } from '@/lib/actions/certification'
 
@@ -74,16 +75,7 @@ export default async function CertificationAdminPage() {
                     <Pencil size={14} />
                   </Link>
                 </Button>
-                <form action={deleteCertification.bind(null, item.id)}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    type="submit"
-                    className="text-red-400 hover:text-red-300"
-                  >
-                    <Trash2 size={14} />
-                  </Button>
-                </form>
+                <DeleteButton action={deleteCertification.bind(null, item.id)} />
               </div>
             </div>
           ))}

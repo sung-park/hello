@@ -1,7 +1,8 @@
 import { db } from '@/lib/db'
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
-import { Trash2, ChevronUp, ChevronDown } from 'lucide-react'
+import { ChevronUp, ChevronDown } from 'lucide-react'
+import { DeleteButton } from '@/components/admin/DeleteButton'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -68,16 +69,7 @@ export default async function SkillsAdminPage() {
                   {cat.name}
                   {cat.nameEn && <span className="ml-2 text-sm text-slate-400">({cat.nameEn})</span>}
                 </h2>
-                <form action={deleteSkillCategory.bind(null, cat.id)}>
-                  <Button
-                    type="submit"
-                    variant="ghost"
-                    size="sm"
-                    className="text-red-400 hover:text-red-300"
-                  >
-                    <Trash2 size={14} />
-                  </Button>
-                </form>
+                <DeleteButton action={deleteSkillCategory.bind(null, cat.id)} />
               </div>
 
               <div className="mb-3 space-y-2 pl-6">
@@ -116,16 +108,7 @@ export default async function SkillsAdminPage() {
                       {skill.years !== null && (
                         <div className="text-xs text-slate-400">{skill.years}y</div>
                       )}
-                      <form action={deleteSkill.bind(null, skill.id)}>
-                        <Button
-                          type="submit"
-                          variant="ghost"
-                          size="sm"
-                          className="text-red-400 hover:text-red-300"
-                        >
-                          <Trash2 size={12} />
-                        </Button>
-                      </form>
+                      <DeleteButton action={deleteSkill.bind(null, skill.id)} />
                     </div>
                   ))
                 )}
