@@ -68,10 +68,15 @@ export async function GET(request: NextRequest) {
     // Wait for fonts to finish loading
     await tab.evaluateHandle('document.fonts.ready')
 
+    // Remove ThemeProvider's dark class so CSS variables revert to light-theme values
+    await tab.evaluate(() => {
+      document.documentElement.classList.remove('dark')
+    })
+
     // Strip decorative root-layout elements for a clean document PDF
     await tab.addStyleTag({
       content: `
-        html, body { background: #ffffff !important; }
+        html, body, .min-h-screen { background: #ffffff !important; }
         canvas { display: none !important; }
         .no-print { display: none !important; }
         [class*="fixed"][class*="inset-0"] { display: none !important; }

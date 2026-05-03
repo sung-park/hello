@@ -64,7 +64,7 @@ function drawPetal(
 export function CherryBlossom() {
   const pathname = usePathname()
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const skip = pathname === '/resume' || pathname === '/cv' || pathname.startsWith('/admin')
+  const skip = pathname === '/resume' || pathname === '/cv' || pathname === '/combined' || pathname.startsWith('/admin')
 
   useEffect(() => {
     if (skip) return
