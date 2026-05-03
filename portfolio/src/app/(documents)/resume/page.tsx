@@ -1,5 +1,5 @@
 import { db } from '@/lib/db'
-import { PrintButton } from '@/components/documents/PrintButton'
+import { PdfDownloadButton } from '@/components/documents/PdfDownloadButton'
 import { DocLanguageToggle } from '@/components/documents/DocLanguageToggle'
 import { ResumeContent } from '@/components/documents/ResumeContent'
 import type { Metadata } from 'next'
@@ -72,7 +72,7 @@ export default async function ResumePage({ searchParams }: PageProps) {
   return (
     <>
       <DocLanguageToggle lang={lang} />
-      <PrintButton lang={lang} />
+      <PdfDownloadButton page="resume" lang={lang} />
       <ResumeContent
         about={about}
         experiences={experiences}

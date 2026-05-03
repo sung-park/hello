@@ -1,5 +1,5 @@
 import { db } from '@/lib/db'
-import { PrintButton } from '@/components/documents/PrintButton'
+import { PdfDownloadButton } from '@/components/documents/PdfDownloadButton'
 import { DocLanguageToggle } from '@/components/documents/DocLanguageToggle'
 import { CvContent } from '@/components/documents/CvContent'
 import type { Metadata } from 'next'
@@ -64,7 +64,7 @@ export default async function CvPage({ searchParams }: PageProps) {
   return (
     <>
       <DocLanguageToggle lang={lang} />
-      <PrintButton lang={lang} />
+      <PdfDownloadButton page="cv" lang={lang} />
       <CvContent
         about={about}
         experiences={experiences}

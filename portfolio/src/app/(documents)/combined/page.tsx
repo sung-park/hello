@@ -1,5 +1,5 @@
 import { db } from '@/lib/db'
-import { PrintButton } from '@/components/documents/PrintButton'
+import { PdfDownloadButton } from '@/components/documents/PdfDownloadButton'
 import { DocLanguageToggle } from '@/components/documents/DocLanguageToggle'
 import { ResumeContent } from '@/components/documents/ResumeContent'
 import { CvContent } from '@/components/documents/CvContent'
@@ -73,7 +73,7 @@ export default async function CombinedPage({ searchParams }: PageProps) {
   return (
     <>
       <DocLanguageToggle lang={lang} />
-      <PrintButton lang={lang} />
+      <PdfDownloadButton page="combined" lang={lang} />
 
       <ResumeContent
         about={about}
