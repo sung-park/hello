@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { PrintButton } from '@/components/documents/PrintButton'
 import { DocLanguageToggle } from '@/components/documents/DocLanguageToggle'
 import { ResumeContent } from '@/components/documents/ResumeContent'
+import { CvContent } from '@/components/documents/CvContent'
 import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
@@ -16,7 +17,7 @@ export async function generateMetadata({
   const about = await db.about.findUnique({ where: { id: 'singleton' } })
   const name = isEn ? about?.nameEn || about?.name : about?.name
   return {
-    title: isEn ? `${name} — Resume` : `${name} — 이력서`,
+    title: isEn ? `${name} — Resume & CV` : `${name} — 이력서 및 경력기술서`,
   }
 }
 
@@ -24,7 +25,7 @@ interface PageProps {
   searchParams: Promise<{ lang?: string }>
 }
 
-export default async function ResumePage({ searchParams }: PageProps) {
+export default async function CombinedPage({ searchParams }: PageProps) {
   const { lang = 'ko' } = await searchParams
   const isEn = lang === 'en'
 
@@ -73,6 +74,7 @@ export default async function ResumePage({ searchParams }: PageProps) {
     <>
       <DocLanguageToggle lang={lang} />
       <PrintButton lang={lang} />
+
       <ResumeContent
         about={about}
         experiences={experiences}
@@ -86,6 +88,20 @@ export default async function ResumePage({ searchParams }: PageProps) {
         languages={languages}
         publications={publications}
         isEn={isEn}
+      />
+
+      <CvContent
+        about={about}
+        experiences={experiences}
+        certifications={certifications}
+        awards={awards}
+        skillCategories={skillCategories}
+        socialLinks={socialLinks}
+        patents={patents}
+        languages={languages}
+        publications={publications}
+        isEn={isEn}
+        className="mt-12 print-page-break"
       />
     </>
   )

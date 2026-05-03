@@ -13,7 +13,7 @@ export function SpotlightEffect() {
     return () => window.removeEventListener('mousemove', handler)
   }, [])
 
-  if (pathname === '/resume' || pathname === '/cv' || pathname.startsWith('/admin')) return null
+  if (pathname === '/resume' || pathname === '/cv' || pathname === '/combined' || pathname.startsWith('/admin')) return null
 
   return (
     <div

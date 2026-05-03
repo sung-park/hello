@@ -11,6 +11,10 @@ export function SocialFooter() {
           cv
         </a>
         {' '}&middot;{' '}
+        <a href="/combined" className="transition-colors hover:text-slate-400">
+          combined
+        </a>
+        {' '}&middot;{' '}
         <a href="/admin/login" className="transition-colors hover:text-slate-400">
           admin
         </a>
