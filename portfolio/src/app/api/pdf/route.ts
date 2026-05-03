@@ -37,6 +37,8 @@ export async function GET(request: NextRequest) {
     browser = await puppeteer.launch({
       executablePath,
       userDataDir: '/tmp/puppeteer-data',
+      // HOME=/nonexistent (system user) prevents Chrome from finding its crashpad db path
+      env: { ...process.env, HOME: '/tmp' },
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
