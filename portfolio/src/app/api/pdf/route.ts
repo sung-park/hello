@@ -68,24 +68,27 @@ export async function GET(request: NextRequest) {
     // Wait for fonts to finish loading
     await tab.evaluateHandle('document.fonts.ready')
 
-    // Remove ThemeProvider's dark class so CSS variables revert to light-theme values
+    // Remove ThemeProvider's dark class so CSS variable colors (text, borders) revert to light
     await tab.evaluate(() => {
       document.documentElement.classList.remove('dark')
     })
 
-    // Strip decorative root-layout elements for a clean document PDF
+    // Hide decorative elements that don't belong in the document PDF
     await tab.addStyleTag({
       content: `
-        html, body, .min-h-screen { background: #ffffff !important; }
+        body { color: #333333 !important; }
         canvas { display: none !important; }
         .no-print { display: none !important; }
         [class*="fixed"][class*="inset-0"] { display: none !important; }
       `,
     })
 
+    // printBackground: false — exclude CSS backgrounds from the PDF.
+    // The dark body background (#0f172a from globals.css) would otherwise bleed into the
+    // PDF margins; this document is white-paper-only so no backgrounds are needed.
     const pdfBytes = await tab.pdf({
       format: 'A4',
-      printBackground: true,
+      printBackground: false,
       // @page { margin } in print.css handles all margins
     })
     const pdf = Buffer.from(pdfBytes)
