@@ -21,7 +21,7 @@ function getExecutablePath(): string {
 }
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url)
+  const { searchParams } = new URL(request.url)
   const pageParam = searchParams.get('page') ?? 'resume'
   const lang = searchParams.get('lang') ?? 'ko'
 
@@ -29,6 +29,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid page parameter' }, { status: 400 })
   }
   const page = pageParam as PageType
+
+  // Use internal localhost URL — avoids nginx HTTPS termination issues when
+  // Puppeteer navigates from within the same container.
+  const internalOrigin = `http://localhost:${process.env.PORT ?? 3000}`
 
   const executablePath = getExecutablePath()
 
@@ -56,7 +60,7 @@ export async function GET(request: NextRequest) {
     // Suppress console noise from the rendered page
     tab.on('console', () => {})
 
-    await tab.goto(`${origin}/${page}?lang=${lang}`, {
+    await tab.goto(`${internalOrigin}/${page}?lang=${lang}`, {
       waitUntil: 'networkidle0',
       timeout: 30_000,
     })
