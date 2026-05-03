@@ -36,13 +36,13 @@ export async function GET(request: NextRequest) {
   try {
     browser = await puppeteer.launch({
       executablePath,
+      userDataDir: '/tmp/puppeteer-data',
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
         '--disable-gpu',
-        '--disable-crash-reporter',
-        '--crash-dumps-dir=/tmp',
+        '--no-zygote',
         '--no-first-run',
         '--disable-extensions',
       ],
