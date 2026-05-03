@@ -68,6 +68,16 @@ export async function GET(request: NextRequest) {
     // Wait for fonts to finish loading
     await tab.evaluateHandle('document.fonts.ready')
 
+    // Strip decorative root-layout elements for a clean document PDF
+    await tab.addStyleTag({
+      content: `
+        html, body { background: #ffffff !important; }
+        canvas { display: none !important; }
+        .no-print { display: none !important; }
+        [class*="fixed"][class*="inset-0"] { display: none !important; }
+      `,
+    })
+
     const pdfBytes = await tab.pdf({
       format: 'A4',
       printBackground: true,
