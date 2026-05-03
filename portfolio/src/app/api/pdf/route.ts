@@ -41,6 +41,10 @@ export async function GET(request: NextRequest) {
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
         '--disable-gpu',
+        '--disable-crash-reporter',
+        '--crash-dumps-dir=/tmp',
+        '--no-first-run',
+        '--disable-extensions',
       ],
       headless: true,
     })
